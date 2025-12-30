@@ -1,0 +1,95 @@
+<div class="container">
+  <div class="canciones">
+    <div class="tracks" *ngFor="let cancion of tracks | slice:1:10">
+      <p class="track-detail">{{cancion.album}}</p>
+      <img [src]="cancion.cover" class="track-cover">
+      <p class="track-name">{{cancion.name}}</p>
+      <p class="track-detail">{{cancion.artist}}</p>
+    </div>
+  </div>
+
+  <div class="opciones"> 
+    <div class="firma">FIRMA</div>
+    
+    <div class="dispositivosRectangulo">
+      <div class="titulo">
+        <h2>Dispositivos Conectados</h2>
+      </div>
+      
+      <div class="devices" *ngFor="let device of devices">
+        <div class="dispositivo" >
+          <span class="content">
+            <span *ngIf="device.is_active">🎶</span> 
+            {{ device.name }} - {{ device.type }}
+            <span *ngIf="device.is_active">🎶</span> 
+          </span>
+        </div>   
+      </div>
+    </div>
+
+    <div class="cancionActual">
+      <div *ngIf="actual; else noMusic">
+        <img [src]="actual.cover" class="actual-cover">
+        <h2>{{ actual.name }}</h2>
+        <p>{{ actual.artist }}</p>
+      </div>
+
+      <ng-template #noMusic>
+        <p>Esperando reproducción...</p>
+      </ng-template>
+
+      <div class="ajustes" *ngIf="actual">
+        <button class="btn-control" (click)="desdeElprincipio()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6L18 18V6z"/></svg>
+        </button>
+
+        <button class="btn-control btn-play" (click)="pausar()">
+          <svg *ngIf="!isPaused" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          <svg *ngIf="isPaused" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+
+        <button class="btn-control" (click)="pasarSiguiente()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+
+    </div>
+    <div class="remix">
+      <input type="text" class="buscador" id="cancion" [(ngModel)]="busquedaCancion" (keyup.enter)="buscarCancion()"
+       (ngModelChange)="escribiendoCancion($event)" name="cancion" placeholder="¿Qué quieres escuchar? 🔍">
+
+      
+
+      <div class="resultados">
+
+        <div class="cancionesEncontradas" *ngFor="let cancion of busqueda" (click)="pedirCancion(cancion)">
+            <img [src]="cancion.cover" class="busqueda-cover">
+            <div class="detalles">
+              <p class="busqueda-name">{{cancion.name}}</p>
+              <p class="busqueda-detail">{{cancion.artist}}</p>
+            </div>
+        </div>
+
+
+      </div>
+
+    </div> 
+  </div>
+</div>
+
+
+<div class="MensajeAdvertencia" *ngIf="isAceptar">
+    <div class="quieresaniadir">
+      <h2>¿Estás seguro que quieres añadir la siguiente canción a la cola?</h2>
+            <div class="tracks" >
+                  <img [src]="quieroaniadir?.cover" class="track-cover">
+                  <p class="seguro-name">{{quieroaniadir?.name}}</p>
+            </div>
+
+        <div class="botones">
+          <button class="btn btn-cancelar" (click)="cancelar()">Cancelar</button>
+          <button class="btn btn-añadir" (click)="confirmarPeticion()">Añadir Canción</button>
+        </div>
+    </div>
+    
+</div>

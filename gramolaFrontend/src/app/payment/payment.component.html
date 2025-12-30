@@ -1,0 +1,32 @@
+<div id="payment-container">
+
+<div id="prepay">
+    <h2>MONEY, MONEY, MONEY</h2>
+
+    <p>{{mensaje}}</p>
+    <button (click)="prepay()" [disabled]="isLoading || !stripeInitialized" 
+            [class.loading]="isLoading">
+        <span *ngIf="!isLoading">Realizar el pago</span>
+        <div *ngIf="isLoading" class="spinner"></div>
+    </button>
+</div>
+
+<form id="payment-form" class="hidden">
+    <h3>Suscripción de 1 mes a Gramola: 10€</h3>
+    
+    <div id="card-element"></div>
+
+    <button id="submit" disabled>
+        <div class="spinner hidden" id="spinner"></div>
+        <span id="button-text">Pagar</span>
+    </button>
+
+    <p id="factura-text"> Las mujeres ya no lloran, las mujeres facturan </p>
+    
+    <p id="card-error" role="alert"></p>
+    
+    <p id="success-message" class="result-message hidden">
+        ¡Pago realizado con éxito! Redirigiendo...
+    </p>
+</form>
+</div>

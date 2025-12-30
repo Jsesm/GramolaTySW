@@ -1,0 +1,11 @@
+{
+    "stripe": {
+        "secretKey" : "sk_test_51SIV18I9bvpKxx36ImWVBmloO10cvdLq32rlx0TCSegg5K5kwOSauISE7PCuJJ1UsHPtMNxVyPVAdec9FgFJH4u300O4A5IXki",
+        "publicKey": "pk_test_51SIV18I9bvpKxx36y14tUFYr1jVueOaQgh9YIQIlGk2cuBTfxECpoA8BhlopFRcmeTA3eQtZR6DIA1zXPB9X1TPm00N9W9bLsx",
+        "suscription": 1000
+    },
+    "urlPayment": "http",
+    "urlCallback": "http",
+    "urlAccountsSpotify": "http",
+    "urlHome": "http://127.0.0.1:4200"
+}

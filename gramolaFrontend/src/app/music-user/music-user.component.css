@@ -1,0 +1,323 @@
+/* Contenedor principal */
+.container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(135deg, #101720 0%, #03102b 100%);
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.info-bar, 
+.opciones-busqueda, 
+.cola-reproduccion, 
+.cancion-actual {
+    background-color: transparent !important;
+    border: 1px solid #1DB954;
+    margin: 4px;               /* Separación entre cuadros */
+    border-radius: 8px;        /* Esquinas suavizadas */
+    /* Efecto opcional: Brillo sutil para que parezca neón */
+    box-shadow: 0 0 5px rgba(29, 185, 84, 0.2); 
+}
+
+
+.buscador { 
+    grid-area: 1 / 2 / 2 / 5; 
+}
+
+.buscadorInput {
+
+  width: 100%; 
+        
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: center;
+  
+  margin: 10px auto;
+  display: block;
+
+  height: 40px;
+  border-radius: 500px;
+  border: none;
+  outline: none;
+  background-color: #1DB954;
+  color: #000000;
+  
+  font-weight: 700;
+  font-size: clamp(0.8rem, 2vw, 1rem); /* EL TRUCO: La fuente se encoge según el ancho de pantalla */
+  
+
+  padding: 0 15px 0 40px; 
+  
+  transition: all 0.3s ease;
+  cursor: text;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info-bar { 
+    grid-area: 2 / 1 / 5 / 2; 
+}
+
+.opciones-busqueda { 
+    grid-area: 2 / 2 / 6 / 5; 
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y:auto;
+    padding: 10px;
+}
+
+
+.tracks {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.track-cover {
+  width: 80%;
+  max-width: 70px;
+  aspect-ratio: 1 / 1;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.cancionesEncontradas, .cancionesenCola {
+  height: 100%;
+  width: 100%; 
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.05); 
+  border: 1px solid rgb(24, 216, 91);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-sizing: border-box; /* Asegura que el padding no "estire" el div */
+}
+
+.cancionesEncontradas:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.btn-aniadir {
+  background-color: #1DB954; /* Verde Spotify */
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  flex-shrink: 0; /* Evita que el botón se deforme */
+  font-size: 0.85rem;
+}
+
+.busqueda-cover {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.detalles {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden; /* Importante para que el texto con elipsis funcione */
+  flex-grow: 1;    /* Hace que los detalles ocupen el resto del ancho */
+}
+
+.busqueda-name {
+  color: #FFFFFF;
+  font-weight: 600;
+  margin: 0;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+.busqueda-detail {
+  color: #b3b3b3;      
+  font-size: 0.8rem;
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cancion-actual { 
+  grid-area: 1 / 5 / 3 / 6;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+/* Contenedor interno del ngIf */
+.cancion-actual > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Imagen de la carátula */
+.actual-cover {
+  width: 100%;
+  max-width: 280px; 
+  min-width: 100px; /* Un poco más flexible */
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  transition: transform 0.3s ease;
+}
+
+.cancion-actual h2 {
+  color: #fff;
+  margin: 1.2rem 0 0.3rem 0;
+  width: 100%;
+  font-size: clamp(1rem, 2.5vw, 1.4rem); /* Ajustado para mejor legibilidad */
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cancion-actual p {
+  color: #1DB954;
+  margin: 0;
+  width: 100%;
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cola-reproduccion { 
+    grid-area: 3 / 5 / 6 / 6; 
+    flex-direction: column;
+    display: flex;
+    gap: 10px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.container > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.75em;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #1DB954;
+}
+
+.MensajeAdvertencia {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(18, 18, 18, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100000;
+    backdrop-filter: blur(8px);
+}
+
+.quieresaniadir {
+  width: 90%;            /* En móviles ocupa casi todo el ancho */
+  max-width: 400px;      /* En PC no se hace gigante */
+  height: auto;          /* El cuadro solo mide lo que mide su contenido */
+  background-color: white; /* Te recomiendo el gris oscuro de Spotify */
+  border: 2px solid #1DB954; /* El borde verde que tenías */
+  border-radius: 15px;       /* Bordes redondeados */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  gap: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+.botones {
+  display: flex;
+  justify-content: space-between; /* Separa los botones a los extremos */
+  align-items: center;
+  gap: 15px;      /* Espacio entre botones */
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Estilo base para ambos botones */
+.btn {
+  flex: 1;         /* Hace que ambos botones midan lo mismo */
+  padding: 12px 20px;
+  border-radius: 500px; /* Bordes redondeados estilo Spotify */
+  border: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap; /* Evita que el texto se parta en dos líneas */
+}
+
+/* Botón Cancelar (Rojo) */
+.btn-cancelar {
+  background-color: #e91e63; /* Un rojo vibrante */
+  color: white;
+}
+
+.btn-cancelar:hover {
+  background-color: #c2185b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+}
+
+/* Botón Añadir (Verde Spotify) */
+.btn-añadir {
+  background-color: #1DB954;
+  color: black;
+}
+
+.btn-añadir:hover {
+  background-color: #1ed760;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+}

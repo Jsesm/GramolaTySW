@@ -1,0 +1,68 @@
+<div class="container">
+    <div class="info-bar"> </div>
+    <div class="opciones-busqueda"> 
+
+        <div class="cancionesEncontradas" *ngFor="let cancion of busqueda">
+            <img [src]="cancion.cover" class="busqueda-cover">
+            
+            <div class="detalles">
+            <p class="busqueda-name">{{cancion.name}}</p>
+            <p class="busqueda-detail">{{cancion.artist}}</p>
+            </div>
+
+            <button class="btn-aniadir" (click)="pedirCancion(cancion)">
+            <span class="icon">+</span>
+            <span class="text-btn">Pulse para Añadir Canción</span>
+            </button>
+        </div>
+
+
+    </div>
+    <div class="cola-reproduccion"> 
+
+        <div class="cancionesenCola" *ngFor="let cancion of tracks| slice:1:6">
+            <img [src]="cancion.cover" class="busqueda-cover">
+            <div class="detalles">
+              <p class="busqueda-name">{{cancion.name}}</p>
+              <p class="busqueda-detail">{{cancion.artist}}</p>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="cancion-actual"> 
+      <div *ngIf="actual; else noMusic">
+        <img [src]="actual.cover" class="actual-cover">
+        <h2>{{ actual.name }}</h2>
+        <p>{{ actual.artist }}</p>
+      </div>
+
+      <ng-template #noMusic>
+        <p>Esperando reproducción...</p>
+      </ng-template>
+    </div>
+    <div class="buscador"> 
+        <input type="text" class="buscadorInput" id="cancion" [(ngModel)]="busquedaCancion" (keyup.enter)="buscarCancion()"
+       (ngModelChange)="escribiendoCancion($event)" name="cancion" placeholder="¿Qué quieres escuchar? 🔍">
+    </div>
+</div>
+
+
+
+<div class="MensajeAdvertencia" *ngIf="isAceptar">
+    <div class="quieresaniadir">
+      <h2>¿Estás seguro que quieres añadir la siguiente canción a la cola?</h2>
+            <div class="tracks" >
+                  <img [src]="quieroaniadir?.cover" class="track-cover">
+                  <p class="seguro-name">{{quieroaniadir?.name}}</p>
+            </div>
+
+        <div class="botones">
+          <button class="btn btn-cancelar" (click)="cancelar()">Cancelar</button>
+          <button class="btn btn-añadir" (click)="confirmarPeticion()">Añadir Canción</button>
+        </div>
+    </div>
+    
+</div>

@@ -1,0 +1,15 @@
+<div class="container-main">
+  <div class="card-viewport">
+    <div class="card-inner" [class.flipped]="isFlipped">
+      
+      <div class="card-face card-front">
+        <app-login (onGoToRegister)="toggleCard()"></app-login>
+      </div>
+
+      <div class="card-face card-back">
+        <app-register (onGoToLogin)="toggleCard()"></app-register>
+      </div>
+
+    </div>
+  </div>
+</div>
