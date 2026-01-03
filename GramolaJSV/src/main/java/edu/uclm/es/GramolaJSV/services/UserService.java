@@ -1,9 +1,14 @@
 package edu.uclm.es.GramolaJSV.services;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,6 +17,7 @@ import edu.uclm.es.GramolaJSV.model.Token;
 import edu.uclm.es.GramolaJSV.model.User;
 import edu.uclm.es.GramolaJSV.utils.DistanciaCoordenadas;
 import edu.uclm.es.GramolaJSV.utils.StringEncryptor;
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class UserService {
@@ -22,7 +28,7 @@ public class UserService {
     private MailService correo;
 
     public String register(String bar, String email, String pwd, String clientId, String clientSecret,
-            String latitud, String longitud, int precio, String firma) {
+            String latitud, String longitud, double precio, String firma) {
 
         Optional<User> optUser = this.userDao.findById(email);
 
@@ -41,7 +47,8 @@ public class UserService {
             this.userDao.save(user);
 
             correo.mandarCorreo(email,
-                    "http://127.0.0.1:8080/users/confirmToken/" + email + "?token=" + user.getCreationtoken().getId());
+                    "http://127.0.0.1:8080/users/confirmToken/" + email + "?token=" + user.getCreationtoken().getId(),
+                    0);
             return "OK 200";
             // return "http://localhost:8080/users/confirmToken/"+ email +"?token="+
             // user.getCreationToken().getId();
@@ -62,7 +69,18 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token incorrecto");
         }
 
+        if (userToken.isUsed()) {
+
+            throw new ResponseStatusException(HttpStatus.GONE, "Token ya verificado");
+        }
+
         if (userToken.getCreationTime() < System.currentTimeMillis() - 60 * 1000 * 30) {
+            User userfiltro = new User();
+            userfiltro.setCreationtoken(userToken);
+            User usuario = this.buscarUsuario(userfiltro);
+
+            userDao.delete(usuario);
+
             throw new ResponseStatusException(HttpStatus.GONE, "Token caducado");
         }
 
@@ -116,6 +134,79 @@ public class UserService {
             }
         }
         return clientId;
+    }
+
+    public User buscarUsuario(User usuarioFiltro) {
+        ExampleMatcher matcher = ExampleMatcher.matchingAny()
+                .withIgnoreNullValues()
+                .withIgnoreCase();
+
+        Example<User> example = Example.of(usuarioFiltro, matcher);
+
+        return this.userDao.findOne(example).orElse(null);
+    }
+
+    public Map<String, String> obtenerDatos(String clientId) {
+        User usuariofiltro = new User();
+        usuariofiltro.setClientId(clientId);
+        User usuario = this.buscarUsuario(usuariofiltro);
+
+        Map<String, String> respuesta = new HashMap<>();
+
+        respuesta.put("nombreBar", usuario.getNombre());
+        respuesta.put("firma", usuario.getFirma());
+
+        return respuesta;
+    }
+
+    public ResponseEntity<Void> logout(HttpSession session) {
+        if (session != null) {
+            session.invalidate(); // Destruye la sesión en el servidor
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    public void cambiarPassword(String clientId) {
+        User usuariofiltro = new User();
+        usuariofiltro.setClientId(clientId);
+        User usuario = this.buscarUsuario(usuariofiltro);
+
+        correo.mandarCorreo(usuario.getEmail(),
+                "http://127.0.0.1:4200/change?email=" + usuario.getEmail(), 1);
+    }
+
+    public Map<String, String> recuperarDatos(String email) {
+        User usuariofiltro = new User();
+        usuariofiltro.setEmail(email);
+        User usuario = this.buscarUsuario(usuariofiltro);
+
+        Map<String, String> respuesta = new HashMap<>();
+
+        respuesta.put("email", usuario.getEmail());
+        respuesta.put("nombreBar", usuario.getNombre());
+
+        return respuesta;
+    }
+
+    public void actualizarDatos(String email, String nombreBar, String emailNuevo, String pwd) {
+        User usuariofiltro = new User();
+        usuariofiltro.setEmail(email);
+        User usuario = this.buscarUsuario(usuariofiltro);
+
+        if (!nombreBar.isEmpty()) {
+            usuario.setNombre(nombreBar);
+        }
+
+        if (!emailNuevo.isEmpty()) {
+            usuario.setEmail(emailNuevo);
+        }
+
+        if (!pwd.isEmpty()) {
+            usuario.setPwd(pwd);
+        }
+
+        userDao.save(usuario);
+
     }
 
 }

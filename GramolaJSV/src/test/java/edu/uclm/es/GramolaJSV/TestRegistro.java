@@ -33,7 +33,7 @@ public class TestRegistro {
 
                 WebElement email = driver.findElement(By.xpath(
                                 "/html/body/app-root/app-auth/div/div/div/div[2]/app-register/div/form/div[1]/div[2]/input"));
-                email.sendKeys("j.sesmero.v@gmail.com");
+                email.sendKeys("6jaisev@gmail.com");
 
                 WebElement password = driver.findElement(By.xpath(
                                 "/html/body/app-root/app-auth/div/div/div/div[2]/app-register/div/form/div[2]/div[1]/input"));

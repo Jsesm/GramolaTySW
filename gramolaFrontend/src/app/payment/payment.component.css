@@ -11,6 +11,7 @@
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
+    justify-content: space-around
 }
 
 #prepay{
@@ -28,8 +29,6 @@
 #prepay p{
     color: white
 }
-
-
 
 #payment-form {
    background: #121212; /* El negro característico de Spotify */

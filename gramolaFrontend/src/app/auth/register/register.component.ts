@@ -34,7 +34,6 @@ export class RegisterComponent implements AfterViewInit {
 
   mensaje: string="";
   registroOK: boolean=false;
-  registroKO: boolean=false;
   
   canvas!: ElementRef<HTMLCanvasElement>;
   isSignaturePadVisible: boolean = false;
@@ -47,56 +46,97 @@ export class RegisterComponent implements AfterViewInit {
   }
 
    registrarse() {
-    this.mirarcamposvacios();
-    this.mirarpasswords();
-    this.registroOK=true;
-    this.service.register(this.email!, this.pwd1!, this.pwd2!, this.nombreBar!, this.clientId!, this.clientSecret!, this.codigoPostal!,
-        this.precioCancion!, this.signatureDataUrl!, this.Ubireal).subscribe( 
-          
-      ok => { 
-        this.mensaje="";
-        console.log('Registro exitoso', ok); 
-        this.router.navigate(['/correo']);
-      }, 
-      error => { 
-        console.error('Error en el registro', error);
-        this.mensaje="Ese correo ya tiene una cuenta"; 
-        this.registroOK=false;
-        this.registroKO=true;
-      } 
-    ); 
+      if (this.comprobarDatosIndividuales(this.nombreBar, "Su bar debe tener algún nombre")) return;
+      if (this.mirarcorreo()) return;
+      if (this.comprobarDatosIndividuales(this.precioCancion, "Las canciones deben tener un precio")) return;
+      if (this.comprobarDatosIndividuales(this.clientId, "Debe poner un clientId")) return;
+      if (this.comprobarDatosIndividuales(this.clientSecret, "Debe poner un clientSecret")) return;
+      if (this.comprobarDatosIndividuales(this.signatureDataUrl, "Debe firmar para verificar que es el dueño")) return;
+      if(this.mirarcodigoPostal()) return;
+        
+      if(this.mirarpasswords(this.pwd1, this.pwd2, "Las contraseñas no coinciden", "Debe poner una contraseña")) return;
+
+    
+      this.registroOK=true;
+      this.service.register(this.email!, this.pwd1!, this.pwd2!, this.nombreBar!, this.clientId!, this.clientSecret!, this.codigoPostal!,
+          this.precioCancion!, this.signatureDataUrl!, this.Ubireal).subscribe( 
+            
+        ok => { 
+          this.mensaje="";
+          console.log('Registro exitoso', ok); 
+          this.router.navigate(['/correo']);
+        }, 
+        error => { 
+          console.error('Error en el registro', error);
+          this.mensaje="Ese correo ya tiene una cuenta"; 
+          this.registroOK=false;
+        } 
+      ); 
     }
 
-    mirarcamposvacios(){
-        if (
-          this.email === "" || 
-          this.pwd1 === "" || 
-          this.pwd2 === "" || 
-          this.nombreBar === "" || 
-          this.clientId === "" || 
-          this.clientSecret === "" || 
-          (this.codigoPostal === "" && this.Ubireal===false) ||
-          this.signatureDataUrl === ""
-      ) {
-          
-          console.error("ERROR: Se detectó al menos un campo con una cadena vacía.");
-          this.mensaje="Todos los campos deben estar rellenos";
-          this.registroKO=true;
-          return ; 
+    comprobarDatosIndividuales(dato: any, mensaje: string): boolean {
+
+      if (!dato || dato.toString().trim() === '') {
+        this.mensaje = mensaje;
+        return true;
       }
+      return false;
     }
 
-    mirarpasswords(){
-      if (this.pwd1 != this.pwd2) { 
-        console.error('Las contraseñas no coinciden');
-        this.mensaje="Las contraseñas no coinciden";
-        this.registroKO=true;
-        return; 
-      } 
+    mirarpasswords(dato1: string, dato2: string, mensajenoCoinciden: string, mensajenoHayPwd: string) {
+      if (!dato1 || !dato2) {
+        this.mensaje = mensajenoHayPwd;
+        return true;
+      }
+      if (dato1 !== dato2) {
+        this.mensaje = mensajenoCoinciden;
+        return true;
+      }
+
+      if (dato1.length<8){
+        this.mensaje = "La contraseña debe tener al menos 8 caracteres";
+        return true;
+      }
+
+      return false;
     }
 
+    mirarcorreo(): boolean {
+      
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+      if (!this.email) {
+        this.mensaje = "Debe escribir un correo";
+        return true;
+      }
+
+      if (!emailPattern.test(this.email)) {
+        this.mensaje = "Esperamos un correo con este formato (ejemplo@dominio.com)";
+        return true;
+      }
 
 
+      return false;
+    }
+
+    mirarcodigoPostal(): boolean {
+
+      const cpPattern = /^\d{5}$/;
+
+      if (!this.codigoPostal && !this.Ubireal) {
+        this.mensaje = "Escriba el código postal o acepte coger su ubicación actual";
+        return true;
+      }
+
+      if (!cpPattern.test(this.codigoPostal.toString())) {
+        this.mensaje = "El código postal debe tener exactamente 5 números";
+        return true;
+      }
+
+      return false;
+    }
+
+       
   @ViewChild('canvas') private set canvasContent(content: ElementRef<HTMLCanvasElement>) {
     if (content) {
 

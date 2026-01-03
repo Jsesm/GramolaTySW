@@ -1,5 +1,13 @@
 <div class="container">
-    <div class="info-bar"> </div>
+    <div class="info-bar">
+        <span class="bar-name">Bienvenido a {{ nombreBar }}</span>
+        
+        <div class="image-container">
+            <img [src]="firma" alt="Firma del usuario">
+        </div>
+    </div>
+
+
     <div class="opciones-busqueda"> 
 
         <div class="cancionesEncontradas" *ngFor="let cancion of busqueda">
@@ -45,24 +53,39 @@
     </div>
     <div class="buscador"> 
         <input type="text" class="buscadorInput" id="cancion" [(ngModel)]="busquedaCancion" (keyup.enter)="buscarCancion()"
-       (ngModelChange)="escribiendoCancion($event)" name="cancion" placeholder="¿Qué quieres escuchar? 🔍">
+       (ngModelChange)="escribiendoCancion($event)" name="cancion" placeholder="Escriba la canción que quiera poner en la gramola 🔍">
     </div>
 </div>
 
 
-
 <div class="MensajeAdvertencia" *ngIf="isAceptar">
     <div class="quieresaniadir">
-      <h2>¿Estás seguro que quieres añadir la siguiente canción a la cola?</h2>
-            <div class="tracks" >
-                  <img [src]="quieroaniadir?.cover" class="track-cover">
-                  <p class="seguro-name">{{quieroaniadir?.name}}</p>
-            </div>
-
-        <div class="botones">
-          <button class="btn btn-cancelar" (click)="cancelar()">Cancelar</button>
-          <button class="btn btn-añadir" (click)="confirmarPeticion()">Añadir Canción</button>
+        <h2>¿Estás seguro que quieres añadir la siguiente canción a la cola?</h2>
+        <div class="tracks">
+            <img [src]="quieroaniadir?.cover" class="track-cover">
+            <p class="seguro-name">{{quieroaniadir?.name}}</p>
         </div>
+
+        <div class="botones" id="botones-confirmacion">
+            <button class="btn btn-cancelar" (click)="cancelar()">Cancelar</button>
+            <button class="btn btn-añadir" (click)="confirmarPeticion()">Añadir Canción</button>
+        </div>
+
+        <form id="payment-form" class="hidden">
+          Se le cobrará un total de {{precio}}€
+            <div id="card-element">
+             
+                </div>
+            
+            <div id="card-error" role="alert" style="color: #E91429; margin-top: 10px;"></div>
+            
+            <div class="botones" style="margin-top: 20px;">
+
+                <button type="button" class="btn btn-cancelar" (click)="cancelar()">Cancelar</button>
+                <button id="submit" class="btn btn-añadir">
+                    Pagar y Añadir
+                </button>
+            </div>
+        </form>
     </div>
-    
 </div>

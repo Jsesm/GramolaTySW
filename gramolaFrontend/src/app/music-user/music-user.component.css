@@ -65,7 +65,37 @@
 }
 
 .info-bar { 
-    grid-area: 2 / 1 / 5 / 2; 
+  grid-area: 2 / 0 / 3 / 2; 
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+  gap: 12px;
+  flex-direction: column;
+}
+
+.image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: white;
+  min-height: 0;
+  min-width: 0;
+}
+
+.image-container img {
+  height: 100%; /* La firma se ajusta a la altura del contenedor */
+  width: 100%;   /* Mantiene la proporción */
+  display: block;
+}
+
+.bar-name {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: #1DB954;
+  font-weight: 500;
 }
 
 .opciones-busqueda { 
@@ -320,4 +350,22 @@
   background-color: #1ed760;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+}
+
+.hidden {
+    display: none !important;
+}
+
+#card-element {
+    background-color: white;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+#payment-form {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
 }

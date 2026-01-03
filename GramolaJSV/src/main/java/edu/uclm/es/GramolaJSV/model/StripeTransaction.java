@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @Entity
 public class StripeTransaction {
@@ -19,6 +20,9 @@ public class StripeTransaction {
     @Column(columnDefinition = "json")
     private String data;
     private String email;
+
+    @Transient
+    private long precio;
 
     public String getEmail() {
         return email;
@@ -46,5 +50,13 @@ public class StripeTransaction {
 
     public void setData(JSONObject jsoData) {
         this.data = jsoData.toString();
+    }
+
+    public long getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(long precio) {
+        this.precio = precio;
     }
 }

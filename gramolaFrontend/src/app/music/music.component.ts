@@ -6,6 +6,8 @@ import { Track } from '../models/track';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReproductorService } from '../reproductor.service';
+import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-music',
@@ -30,6 +32,9 @@ export class MusicComponent implements OnInit {
   
   isPaused: boolean=false;
   isAceptar: boolean=false;
+  isCambioPass: boolean=false;
+  isCerrarSesion: boolean=false;
+
   quieroaniadir?: Track; //Cancion que quieres añadir
 
   deviceError? : string //La ? significa que puede tener valor o no
@@ -38,13 +43,41 @@ export class MusicComponent implements OnInit {
 
   private timeoutId: any;
 
-  constructor(private spoti : SpotiService, private gramola : ReproductorService) {}
+  constructor(private spoti : SpotiService, private gramola : ReproductorService, private router: Router, private userService: UserService) {}
    
   ngOnInit(): void { 
     this.getDevices()
     this.getCurrentPlayList()
   } 
 
+  cerrarMensajePass(){
+    this.isCambioPass=false;
+  }
+
+  pedircerrarSesion() {
+    this.isCerrarSesion=true;
+  }
+
+  cambiarPassword() {
+    this.userService.cambiarPassword()
+    this.isCambioPass=true;
+  }
+
+  cancelarCerrarSesion(){
+    this.isCerrarSesion=false;
+  }
+
+  cerrarSesion() {
+    this.userService.logout().subscribe({
+      next: () => {
+        sessionStorage.clear();
+        this.router.navigate(['/login'], { replaceUrl: true });
+      },
+      error: (err) => {
+        console.error("Error al invalidar sesión en servidor", err);        
+      }
+    });
+  }
     getCurrentPlayList() {
       this.gramola.getCurrentPlayList().subscribe((state) => {
         this.actual = state.actual;
@@ -164,7 +197,7 @@ export class MusicComponent implements OnInit {
           error: (err) => {
             console.error('Error en la cola:', err);
           }
-        });
+    });
 
     
 

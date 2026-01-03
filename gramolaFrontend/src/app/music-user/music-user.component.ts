@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PaymentService } from '../payment.service';
 import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 
 // Declaramos Stripe para que TypeScript lo reconozca globalmente
 declare let Stripe: any 
@@ -31,19 +32,34 @@ export class MusicUserComponent {
     //Método de pago
     stripe?: any;
     transactionDetails: any;
-    token?: string; 
-    // Nuevo estado para controlar la visibilidad y el spinner
-    isLoading: boolean = false; 
-    // Estado para rastrear si Stripe se inicializó correctamente
     stripeInitialized: boolean = false;
-
+    precio: any;
+    
     private timeoutId: any;
 
-    constructor(private spoti : SpotiService, private gramola : ReproductorService, private paymentService: PaymentService) {}
+    nombreBar?: any;
+    firma?: any;
+    constructor(private spoti : SpotiService, private gramola : ReproductorService, private paymentService: PaymentService, private userService : UserService) {}
 
       ngOnInit(): void { 
-        this.getCurrentPlayList()
+        this.getCurrentPlayList();
+        this.crearMetodoPago();
+        this.buscarDatos();
+      }
+
+    buscarDatos(){
+      this.userService.buscarDatos().subscribe( 
+      response => {
+        this.nombreBar=response.nombreBar;
+        this.firma= response.firma;
+        
+      }, 
+      err => { 
+        console.log(err); 
       } 
+    );
+
+    }
 
     buscarCancion(){
       this.gramola.buscarCancion(this.busquedaCancion).subscribe((state) => {
@@ -79,22 +95,93 @@ export class MusicUserComponent {
       this.isAceptar=false;
     }
 
-    confirmarPeticion(){
-      /*
+    aniadirCancion(){
+
+      if(!this.quieroaniadir) return;
+
+      this.spoti.aniadir(this.quieroaniadir.id).subscribe({
+          next: (result) => {
+            this.isAceptar=false;
+            this.busqueda=[];
+            this.busquedaCancion="";
+            console.log('Cancion añadida a la cola', this.busqueda);
+            
+            this.timeoutId = setTimeout(() => {
+              this.getCurrentPlayList();
+            }, 400);
+
+          },
+          error: (err) => {
+            console.error('Error en la cola:', err);
+          }
+    });
+  }
+
+    crearMetodoPago(){
       this.paymentService.getPublickey().subscribe({
         next: (publickey: string) => {
           this.stripe = new Stripe(publickey);
-
-          
-          
+          this.stripeInitialized = true;
         },
         error: (err) => {
           console.error("Error al obtener la clave pública:", err);
           alert("Error al cargar la configuración de pagos. Por favor, recargue la página.");
-        
         }
-      });*/
+      });
     }
+
+    confirmarPeticion() {
+    if (!this.stripeInitialized) return alert("Cargando sistema...");
+      this.paymentService.prepay("Cancion").subscribe({
+        next: (res: any) => {
+          this.transactionDetails = JSON.parse(res.body);
+          this.precio= this.transactionDetails.precio/100;
+          this.showForm();
+        },
+        error: (err) => alert("Error de conexión")
+      });
+    }
+
+  showForm() {
+    // Mostrar UI (asumiendo que manejas clases .hidden)
+    document.getElementById("payment-form")?.classList.remove("hidden");
+    const botonesIniciales = document.getElementById("botones-confirmacion");
+
+    if (botonesIniciales) {
+      botonesIniciales.classList.add('hidden');
+    }
+    
+    const elements = this.stripe.elements();
+    const card = elements.create("card", { hidePostalCode: true });
+    card.mount("#card-element");
+
+    // Listener simplificado
+    document.getElementById("payment-form")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.payWithCard(card);
+    });
+  }
+
+  payWithCard(card: any) {
+    const secret = this.transactionDetails.data.client_secret;
+    this.stripe.confirmCardPayment(secret, { payment_method: { card } })
+      .then((result: any) => {
+        if (result.error) {
+          alert(result.error.message);
+        } else if (result.paymentIntent.status === 'succeeded') {
+          this.confirmarEnBackend(result);
+        }
+      });
+  }
+
+confirmarEnBackend(stripeResponse: any) {
+  this.paymentService.guardarCancion(stripeResponse, this.transactionDetails.id, this.quieroaniadir)
+    .subscribe(() => {
+      this.aniadirCancion(); 
+    });
+}
+
+    
 
 
 

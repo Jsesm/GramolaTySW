@@ -1,18 +1,29 @@
 <div id="payment-container">
 
 <div id="prepay">
-    <h2>MONEY, MONEY, MONEY</h2>
+    <h2>MONEY, MONEY, MONTH</h2>
 
-    <p>{{mensaje}}</p>
-    <button (click)="prepay()" [disabled]="isLoading || !stripeInitialized" 
+    <p>{{mensajeMensual}}</p>
+    <button (click)="prepay('Cuenta')" [disabled]="isLoading || !stripeInitialized" 
             [class.loading]="isLoading">
-        <span *ngIf="!isLoading">Realizar el pago</span>
+        <span *ngIf="!isLoading">Quiero un mes</span>
+        <div *ngIf="isLoading" class="spinner"></div>
+    </button>
+</div>
+
+<div id="prepay">
+    <h2>UN AÑO MÁS</h2>
+
+    <p>{{mensajeAnual}}</p>
+    <button (click)="prepay('Anual')" [disabled]="isLoading || !stripeInitialized" 
+            [class.loading]="isLoading">
+        <span *ngIf="!isLoading">Pagar un año</span>
         <div *ngIf="isLoading" class="spinner"></div>
     </button>
 </div>
 
 <form id="payment-form" class="hidden">
-    <h3>Suscripción de 1 mes a Gramola: 10€</h3>
+    <h3>Suscripción a Gramola por {{precio}}€</h3>
     
     <div id="card-element"></div>
 

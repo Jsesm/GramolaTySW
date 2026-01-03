@@ -22,7 +22,7 @@ export class LoginComponent {
   coordenadas?: GeolocationPosition
   email: string = '';
   password: string = '';
-    errorMsg: any;
+    errorMsg: string = 'Escriba sus datos si es el dueño o pulse en "Soy Cliente del Bar" si está en el bar.';
   scopes : string[] = ["user-read-private", "user-read-email", "playlist-read-private", "playlist-read-collaborative",
      "user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing", "user-library-read",
       "user-library-modify", "user-read-recently-played", "user-top-read", "app-remote-control", "streaming"]; 
@@ -34,6 +34,9 @@ export class LoginComponent {
   authorizeUrl: 'https://accounts.spotify.com/authorize'
 };
 
+  faltaemail: boolean= false;
+  faltapass: boolean= false;
+
   constructor(private router: Router, private userService : UserService, private geoService : GeolocalizacionService) {  }
   
   // Función que el botón de enlace llamará
@@ -42,6 +45,7 @@ export class LoginComponent {
   }
 
   onLoginSubmit() {
+    this.login();
     
   }
 
@@ -58,10 +62,11 @@ login() {
         this.getToken(this.spoti.redirectUrl); 
       }, 
       err => { 
-        this.errorMsg = err.error.message; 
+        this.errorMsg = 'No hemos encontrado una cuenta creada con esos datos.';
       } 
     );
-  } 
+  }
+
 
     private getToken(redirectUrl: string) { 
       let state = this.generateString();

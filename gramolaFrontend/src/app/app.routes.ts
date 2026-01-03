@@ -6,6 +6,7 @@ import { CallBackComponent } from './callback/callback.component';
 import { MusicComponent } from './music/music.component';
 import { UserCallBackComponent } from './usercallback/usercallback.component';
 import { MusicUserComponent } from './music-user/music-user.component';
+import { ChangeComponent } from './change/change.component';
 
 export const routes: Routes = [
     
@@ -18,6 +19,7 @@ export const routes: Routes = [
     { path: 'music', component: MusicComponent },
     { path: 'musicUser', component: MusicUserComponent },
     { path: 'usercallback', component:  UserCallBackComponent },
+     { path: 'change', component:  ChangeComponent },
     
     { path: '**', redirectTo: 'login' } 
 ];

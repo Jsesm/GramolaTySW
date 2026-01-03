@@ -18,7 +18,7 @@ public class User {
     private String clientSecret;
     private String latitud;
     private String longitud;
-    private int precioCancion;
+    private long precioCancion;
     @Lob
     private String firma;
 
@@ -88,12 +88,12 @@ public class User {
         this.latitud = latitud;
     }
 
-    public int getPrecioCancion() {
+    public long getPrecioCancion() {
         return precioCancion;
     }
 
-    public void setPrecioCancion(int precioCancion) {
-        this.precioCancion = precioCancion;
+    public void setPrecioCancion(double precioCancion) {
+        this.precioCancion = (long) (precioCancion * 100);
     }
 
     public String getFirma() {

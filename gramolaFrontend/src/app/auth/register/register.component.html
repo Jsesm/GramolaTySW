@@ -56,11 +56,11 @@
                 {{ signatureDataUrl ? 'Firma Guardada' : 'Añadir Firma Digital' }}
             </button>
 
-            <div *ngIf="registroKO" class="error-container">
+            <div class="error-container">
                 {{ mensaje }}
             </div>
 
-            <button type="submit" class="btn-primary">Registrar Bar</button>
+            <button type="submit" class="btn-primary" (click)="registrarse()">Registrar Bar</button>
 
         </div>
     </form>

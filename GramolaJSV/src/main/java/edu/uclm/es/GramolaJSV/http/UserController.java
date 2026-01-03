@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import edu.uclm.es.GramolaJSV.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
@@ -64,7 +66,7 @@ public class UserController {
         String latitud = body.get("latitud");
         String longitud = body.get("longitud");
         String precioCancion = body.get("precioCancion");
-        int precio = Integer.parseInt(precioCancion);
+        double precio = Double.parseDouble(precioCancion);
         String firma = body.get("firma");
 
         if (!pwd1.equals(pwd2)) {
@@ -96,6 +98,40 @@ public class UserController {
 
         return this.service.comprobarBares(latitud, longitud);
 
+    }
+
+    @GetMapping("/obtenerDatos/{clientId}")
+    public Map<String, String> obtenerDatos(@PathVariable String clientId) {
+        // Aquí buscas la firma o los datos usando el clientId
+        return this.service.obtenerDatos(clientId);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        return this.service.logout(session);
+
+    }
+
+    @PostMapping("/cambiarPassword")
+    public void cambiarPassword(@RequestParam String clientId) {
+        this.service.cambiarPassword(clientId);
+    }
+
+    @GetMapping("/recuperarDatos")
+    public Map<String, String> recuperarDatos(@RequestParam String email) {
+        return this.service.recuperarDatos(email);
+    }
+
+    @PostMapping("/actualizarDatos")
+    public void actualizarDatos(@RequestParam String email, @RequestBody Map<String, String> body) {
+
+        String nombreBar = body.get("nombreBar");
+        String emailNuevo = body.get("email");
+        String pwd = body.get("pwd");
+
+        this.service.actualizarDatos(email, nombreBar, emailNuevo, pwd);
     }
 
 }

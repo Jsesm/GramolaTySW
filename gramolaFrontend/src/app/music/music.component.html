@@ -9,7 +9,25 @@
   </div>
 
   <div class="opciones"> 
-    <div class="firma">FIRMA</div>
+ <div class="firma">
+  <button class="vinyl-button" (click)="cambiarPassword()">
+    <div class="vinyl-disc">
+      <div class="vinyl-lines"></div>
+      <div class="vinyl-label label-red"></div>
+      <div class="vinyl-hole"></div>
+    </div>
+    <span class="button-text">Cambiar Contraseña</span>
+  </button>
+
+  <button class="vinyl-button" (click)="pedircerrarSesion()">
+    <div class="vinyl-disc">
+      <div class="vinyl-lines"></div>
+      <div class="vinyl-label label-blue"></div>
+      <div class="vinyl-hole"></div>
+    </div>
+    <span class="button-text">Cerrar Sesión</span>
+  </button>
+</div>
     
     <div class="dispositivosRectangulo">
       <div class="titulo">
@@ -85,10 +103,36 @@
                   <img [src]="quieroaniadir?.cover" class="track-cover">
                   <p class="seguro-name">{{quieroaniadir?.name}}</p>
             </div>
-
         <div class="botones">
           <button class="btn btn-cancelar" (click)="cancelar()">Cancelar</button>
           <button class="btn btn-añadir" (click)="confirmarPeticion()">Añadir Canción</button>
+        </div>
+    </div>
+    
+</div>
+
+
+
+<div class="MensajeAdvertencia" *ngIf="isCambioPass">
+    <div class="quieresaniadir">
+      <h2>Te hemos mandado un mensaje a tu correo para cambiar la contraseña. No te preocupes hasta que no cambies 
+        la contraseña puedes seguir usando la app</h2>
+            
+
+        <div class="botones">
+          <button class="btn btn-añadir" (click)="cerrarMensajePass()">Recibido</button>
+        </div>
+    </div>
+    
+</div>
+
+<div class="MensajeAdvertencia" *ngIf="isCerrarSesion">
+    <div class="quieresaniadir">
+      <h2>¿Seguro que quiere cerrar sesión?</h2>
+
+        <div class="botones">
+          <button class="btn btn-cancelar" (click)="cancelarCerrarSesion()">Cancelar</button>
+          <button class="btn btn-añadir" (click)="cerrarSesion()">Cerrar Sesión</button>
         </div>
     </div>
     

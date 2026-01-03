@@ -4,9 +4,16 @@
 }
 
 .form{
-    border: 3px solid rgba(255, 238, 0, 0.1);
+    border: 3px solid rgba(0, 255, 13, 0.295);
     border-radius: 12px;
+    padding: 10px;
 
+}
+
+.form p{
+    border: 1px solid #1db95452;
+    color: red;
+    min-width: 0;
 }
 
 /* 2. Estética Spotify: Fondo negro profundo y bordes suaves */

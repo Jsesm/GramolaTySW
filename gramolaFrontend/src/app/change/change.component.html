@@ -1,0 +1,46 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="logo">
+      <i class="fab fa-spotify"></i>
+      <span>Gramola</span>
+    </div>
+    
+    <h1>Cambia los datos que necesites.</h1>
+
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">¿Cuál es tu correo electrónico?</label>
+        <input type="email" id="email" placeholder={{email}} [(ngModel)]="email" name="email">
+      </div>
+
+      <div class="form-group">
+        <label for="name">¿Cómo se llama tu bar?</label>
+        <input type="text" id="name" placeholder={{nombreBar}} [(ngModel)]="nombreBar" name="name">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Escribe una contraseña</label>
+        <input type="password" id="password" placeholder={{pwd}} [(ngModel)]="pwd1" name="password">
+      </div>
+
+            <div class="form-group">
+        <label for="password">Confirma tu contraseña</label>
+        <input type="password" id="password" placeholder={{pwd}} [(ngModel)]="pwd2" name="pwd">
+      </div>
+
+      <p>{{error}}</p>
+
+      <button type="submit" class="btn-signup">Confirmar Cambios</button>
+    </form>
+  </div>
+</div>
+
+<div class="MensajeAdvertencia" *ngIf="isCambioPass">
+    <div class="quieresaniadir">
+      <h2>Los cambios se han realizado correctamente, le redirigiremos al login para que pueda iniciar sesión.</h2>
+    
+        <div class="botones">
+          <button class="btn btn-añadir" (click)="cerrarMensajePass()">Recibido</button>
+        </div>
+    </div>
+    

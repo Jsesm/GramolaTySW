@@ -74,7 +74,6 @@ export class ReproductorService {
       );
     }
 
-
     private mapToTrack(item: any): Track {
         return {
           id: item.id,

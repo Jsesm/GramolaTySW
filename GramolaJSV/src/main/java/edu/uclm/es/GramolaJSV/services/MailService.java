@@ -19,19 +19,40 @@ public class MailService {
     private static final String SENDER_EMAIL = "gsidiazsesmero@gmail.com";
     private static final String APP_PASSWORD = "oncu navd zqfv jdtf ";
 
-    public void mandarCorreo(String correo, String link) {
-        String subject = "⏳ ¡Solo un paso más! Confirma tu cuenta de Gramola";
+    public void mandarCorreo(String correo, String link, int tipo) {
+        String subject = "";
+        String body = "";
+        if (tipo == 0) {
+            subject = "⏳ ¡Solo un paso más! Confirma tu cuenta de Gramola";
 
-        String body = "¡Hola!\n\n" +
-                "Tu cuenta ha sido registrada correctamente. Para empezar a disfrutar de toda nuestra música " +
-                "dentro de tu bar solo falta que confirmes tu primer pago.\n\n" +
-                "⚠️ IMPORTANTE: Por seguridad, el enlace de confirmación caducará en solo 10 MINUTOS. " +
-                "Si el link caduca tendrás que registrarte otra vez\n\n" +
-                "Pulsa en el siguiente link para completar el proceso:\n" +
-                link + "\n\n" +
-                "¡Date prisa, no dejes que la música se detenga!\n\n" +
-                "¡QUEREMOS MARCHA MARCHA!\n\n" +
-                "El equipo de desarrollo";
+            body = "¡Hola!\n\n" +
+                    "Tu cuenta ha sido registrada correctamente. Para empezar a disfrutar de toda nuestra música " +
+                    "dentro de tu bar solo falta que confirmes tu primer pago.\n\n" +
+                    "⚠️ IMPORTANTE: Por seguridad, el enlace de confirmación caducará en solo 10 MINUTOS. " +
+                    "Si el link caduca tendrás que registrarte otra vez\n\n" +
+                    "Pulsa en el siguiente link para completar el proceso:\n" +
+                    link + "\n\n" +
+                    "¡Date prisa, no dejes que la música se detenga!\n\n" +
+                    "¡QUEREMOS MARCHA MARCHA!\n\n" +
+                    "El equipo de desarrollo";
+
+        } else {
+
+            subject = "🎸 ¡Cambios en el cartel! Actualización de tu cuenta en Gramola";
+
+            body = "¡Hola de nuevo!\n\n" +
+                    "Hemos recibido una solicitud para actualizar la información de tu cuenta. " +
+                    "En Gramola nos tomamos la seguridad tan en serio como el buen sonido, " +
+                    "así que necesitamos que confirmes estos cambios antes de aplicarlos.\n\n" +
+                    "Si no has sido tú quien ha solicitado este cambio," +
+                    "te recomendamos cambiar tu contraseña inmediatamente.\n\n" +
+                    "Pulsa en el siguiente link para empezar los cambios:\n" +
+                    link + "\n\n" +
+                    "¡Tu bar, tus reglas, tu música!\n\n" +
+                    "¡QUE NO PARE LA FIESTA!\n\n" +
+                    "El equipo de desarrollo";
+
+        }
 
         sendEmail(correo, subject, body);
     }

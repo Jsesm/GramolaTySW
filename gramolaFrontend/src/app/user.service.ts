@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { switchMap } from 'rxjs/operators';
 import { GeolocalizacionService } from './geolocalizacion.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+
 
   private apiUrl = ' http://localhost:8080/users'; 
   constructor(private http: HttpClient, private geoService: GeolocalizacionService) {} 
@@ -55,6 +57,45 @@ export class UserService {
     const url = `${this.apiUrl}/bares?latitud=${latitud}&longitud=${longitud}`;
 
     return this.http.get<any>(url, { responseType: 'text' as 'json' }); 
+
+  }
+
+    buscarDatos(){
+
+    const clientId= sessionStorage.getItem("clientId")
+    return this.http.get<any>(`${this.apiUrl}/obtenerDatos/${clientId}`);
+
+  }
+
+  logout(): Observable<any> {
+  return this.http.post(`${this.apiUrl}/logout`, {}, { 
+    withCredentials: true 
+  });
+}
+
+  cambiarPassword(){
+    const clientId= sessionStorage.getItem("clientId");
+    
+    this.http.post(`${this.apiUrl}/cambiarPassword?clientId=${clientId}`, {}, { 
+  withCredentials: true 
+}).subscribe();
+  }
+
+
+  recuperarDatos(email: string){
+
+    return this.http.get<any>(`${this.apiUrl}/recuperarDatos?email=${email}`);
+
+  }
+
+  actualizarDatos(clave: string, nombreBar: string, email: string, pwd: string) {
+        let info = { 
+          nombreBar: nombreBar,
+          email : email, 
+          pwd : pwd
+        }
+
+    return this.http.post<any>(`${this.apiUrl}/actualizarDatos?email=${clave}`, info, {withCredentials: true, responseType: 'text' as 'json'}); 
 
   }
 
