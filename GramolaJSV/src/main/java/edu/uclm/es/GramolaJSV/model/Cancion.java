@@ -1,5 +1,7 @@
 package edu.uclm.es.GramolaJSV.model;
 
+import java.util.Random;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -19,7 +21,9 @@ public class Cancion {
     }
 
     public void setIdCancion(String idCancion) {
-        this.idCancion = idCancion;
+        Random rad = new Random();
+        int numeroAleatorio = rad.nextInt(1000); // Genera de 0 a 999
+        this.idCancion = idCancion + "-" + numeroAleatorio;
     }
 
     public String getNombreCancion() {

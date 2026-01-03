@@ -155,7 +155,7 @@ export class PaymentComponent implements OnInit {
               self.setLoading(true, true);
               const resultMessage = document.querySelector(".result-message") as HTMLElement;
               resultMessage.classList.remove("hidden");
-              document.getElementById("payment-form")!.classList.add("hidden"); // Ocultar formulario
+              document.getElementById("payment-form")!.classList.add("hidden");
               setTimeout(() => {
                  self.router.navigate(["/login"]) 
               }, 3000); // Redirigir después de 3 segundos para que el usuario vea el mensaje

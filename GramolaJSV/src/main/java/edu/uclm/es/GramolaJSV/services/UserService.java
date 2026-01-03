@@ -129,6 +129,8 @@ public class UserService {
             distanciaEntrePuntos = DistanciaCoordenadas.calcularDistanciaMetros(Double.parseDouble(user.getLatitud()),
                     Double.parseDouble(user.getLongitud()), latitud, longitud);
 
+            System.out.println(distanciaEntrePuntos);
+
             if (distanciaEntrePuntos <= 100 && distanciaEntrePuntos < menorDistancia) {
                 clientId = user.getClientId();
             }

@@ -39,6 +39,7 @@ export class MusicUserComponent {
 
     nombreBar?: any;
     firma?: any;
+  error: string="";
     constructor(private spoti : SpotiService, private gramola : ReproductorService, private paymentService: PaymentService, private userService : UserService) {}
 
       ngOnInit(): void { 
@@ -167,7 +168,8 @@ export class MusicUserComponent {
     this.stripe.confirmCardPayment(secret, { payment_method: { card } })
       .then((result: any) => {
         if (result.error) {
-          alert(result.error.message);
+          this.error= result.error.message || "Ha ocurrido un error desconocido";
+          console.log("Error");
         } else if (result.paymentIntent.status === 'succeeded') {
           this.confirmarEnBackend(result);
         }
