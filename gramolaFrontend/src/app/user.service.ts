@@ -82,9 +82,9 @@ export class UserService {
   }
 
 
-  recuperarDatos(email: string){
+  recuperarDatos(email: string, token: string){
 
-    return this.http.get<any>(`${this.apiUrl}/recuperarDatos?email=${email}`);
+    return this.http.get<any>(`${this.apiUrl}/recuperarDatos?email=${email}&id=${token}`);
 
   }
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.uclm.es.GramolaJSV.dao.TokenDao;
 import edu.uclm.es.GramolaJSV.dao.UserDao;
 import edu.uclm.es.GramolaJSV.model.Token;
 import edu.uclm.es.GramolaJSV.model.User;
@@ -26,6 +27,8 @@ public class UserService {
     private UserDao userDao;
     @Autowired
     private MailService correo;
+    @Autowired
+    private TokenDao tokenDao;
 
     public String register(String bar, String email, String pwd, String clientId, String clientSecret,
             String latitud, String longitud, double precio, String firma) {
@@ -70,7 +73,6 @@ public class UserService {
         }
 
         if (userToken.isUsed()) {
-
             throw new ResponseStatusException(HttpStatus.GONE, "Token ya verificado");
         }
 
@@ -78,17 +80,13 @@ public class UserService {
             User userfiltro = new User();
             userfiltro.setCreationtoken(userToken);
             User usuario = this.buscarUsuario(userfiltro);
-
             userDao.delete(usuario);
-
             throw new ResponseStatusException(HttpStatus.GONE, "Token caducado");
-        }
 
-        if (userToken.isUsed()) {
-            throw new ResponseStatusException(HttpStatus.GONE, "Token ya utilizado");
         }
 
         userToken.use();
+        this.tokenDao.save(userToken);
     }
 
     public String login(String email, String pwd) {
@@ -173,14 +171,42 @@ public class UserService {
         usuariofiltro.setClientId(clientId);
         User usuario = this.buscarUsuario(usuariofiltro);
 
-        correo.mandarCorreo(usuario.getEmail(),
-                "http://127.0.0.1:4200/change?email=" + usuario.getEmail(), 1);
+        if (usuario == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+        }
+        Token pwdtoken = new Token();
+        usuario.setPwdtoken(pwdtoken);
+        this.userDao.save(usuario);
+        correo.mandarCorreo(
+                usuario.getEmail(),
+                "http://127.0.0.1:4200/change?id=" + pwdtoken.getId() + "&email=" + usuario.getEmail(),
+                1);
     }
 
-    public Map<String, String> recuperarDatos(String email) {
+    public Map<String, String> recuperarDatos(String email, String tokenid) {
+        String tokenUsuario;
         User usuariofiltro = new User();
         usuariofiltro.setEmail(email);
         User usuario = this.buscarUsuario(usuariofiltro);
+
+        if (usuario == null || usuario.getPwdtoken() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No tiene un token de cambio de contraseña");
+        }
+
+        Token tokusuario = usuario.getPwdtoken();
+
+        tokenUsuario = tokusuario.getId();
+
+        if (!tokenUsuario.equals(tokenid)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No tiene un token de cambio de contraseña");
+        }
+
+        if (tokusuario.getCreationTime() < System.currentTimeMillis() - 60 * 1000 * 30) {
+            throw new ResponseStatusException(HttpStatus.GONE, "Token caducado");
+        }
+
+        tokusuario.use();
+        this.tokenDao.save(tokusuario);
 
         Map<String, String> respuesta = new HashMap<>();
 
@@ -195,6 +221,19 @@ public class UserService {
         usuariofiltro.setEmail(email);
         User usuario = this.buscarUsuario(usuariofiltro);
 
+        if (usuario == null) {
+            throw new ResponseStatusException(HttpStatus.GONE, "NO existe el usuario");
+
+        }
+
+        if (usuario.getPwdtoken() == null) {
+            throw new ResponseStatusException(HttpStatus.GONE, "El usuario no ha pedido cambiar sus datos");
+        }
+
+        if (!usuario.getPwdtoken().isUsed()) {
+            throw new ResponseStatusException(HttpStatus.GONE, "No hemos comprobado su id anteriormente");
+        }
+
         if (!nombreBar.isEmpty()) {
             usuario.setNombre(nombreBar);
         }
@@ -207,6 +246,7 @@ public class UserService {
             usuario.setPwd(pwd);
         }
 
+        usuario.setPwdtoken(null);
         userDao.save(usuario);
 
     }

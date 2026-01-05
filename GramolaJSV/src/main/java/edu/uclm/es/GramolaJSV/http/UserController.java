@@ -1,6 +1,7 @@
 package edu.uclm.es.GramolaJSV.http;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +89,17 @@ public class UserController {
     @GetMapping("/confirmToken/{email}")
     public void confirmToken(@PathVariable String email, @RequestParam String token, HttpServletResponse response)
             throws IOException {
-        this.service.confirmToken(email, token);
-        response.sendRedirect("http://127.0.0.1:4200/payment?token=" + token);
-        // response.setRedirect(la parte del pago, le pasas el token)
+        try {
+            this.service.confirmToken(email, token);
+            response.sendRedirect("http://127.0.0.1:4200/payment?token=" + token);
+        } catch (ResponseStatusException e) {
+            if (e.getStatusCode() == HttpStatus.GONE && e.getReason().equals("Token ya verificado")) {
+                response.sendRedirect("http://127.0.0.1:4200/payment?token=" + token);
+                // Si el token ha sido usado ya, le mandamos directo al pago otra vez
+            } else {
+                response.sendRedirect("http://127.0.0.1:4200/expired");
+            }
+        }
     }
 
     @GetMapping("/bares")
@@ -120,8 +129,19 @@ public class UserController {
     }
 
     @GetMapping("/recuperarDatos")
-    public Map<String, String> recuperarDatos(@RequestParam String email) {
-        return this.service.recuperarDatos(email);
+    public Map<String, String> recuperarDatos(@RequestParam String email, @RequestParam String id,
+            HttpServletResponse response) throws IOException {
+
+        try {
+            Map<String, String> datos = this.service.recuperarDatos(email, id);
+            return datos;
+
+        } catch (ResponseStatusException e) {
+
+            return null;
+
+        }
+
     }
 
     @PostMapping("/actualizarDatos")

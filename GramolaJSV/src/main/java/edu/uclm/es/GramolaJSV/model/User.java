@@ -31,6 +31,10 @@ public class User {
                                           // token
     private Token creationtokenid;
 
+    @OneToOne(cascade = jakarta.persistence.CascadeType.ALL, fetch = jakarta.persistence.FetchType.LAZY)
+    @JoinColumn(name = "pwdtoken")
+    private Token pwdtoken;
+
     // Getters y setters
     public String getEmail() {
         return email;
@@ -118,6 +122,14 @@ public class User {
 
     public void setSpotiSimpleToken(SpotiToken token) {
         this.spotiSimpleToken = token;
+    }
+
+    public Token getPwdtoken() {
+        return pwdtoken;
+    }
+
+    public void setPwdtoken(Token pwdtoken) {
+        this.pwdtoken = pwdtoken;
     }
 
 }

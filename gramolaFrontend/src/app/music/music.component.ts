@@ -188,8 +188,12 @@ export class MusicComponent implements OnInit {
           next: (result) => {
 
             this.isAceptar=false;
-            this.getCurrentPlayList();
+            
             this.busqueda=[];
+
+            this.timeoutId = setTimeout(() => {
+          this.getCurrentPlayList();
+        }, 300);
 
             this.busquedaCancion="";
             console.log('Cancion añadida a la cola', this.busqueda);

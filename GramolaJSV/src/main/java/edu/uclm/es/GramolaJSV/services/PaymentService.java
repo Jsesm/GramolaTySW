@@ -85,8 +85,10 @@ public class PaymentService {
         }
 
         Token token = tok.get();
-        token.use();
-        this.tokenDao.save(token);
+        /*
+         * token.use();
+         * this.tokenDao.save(token);
+         */
 
         User usuariofiltro = new User();
         usuariofiltro.setCreationtoken(token);

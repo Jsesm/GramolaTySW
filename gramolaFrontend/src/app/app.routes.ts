@@ -7,6 +7,8 @@ import { MusicComponent } from './music/music.component';
 import { UserCallBackComponent } from './usercallback/usercallback.component';
 import { MusicUserComponent } from './music-user/music-user.component';
 import { ChangeComponent } from './change/change.component';
+import { ExpiredComponent } from './expired/expired.component';
+import { ErrorpwdComponent } from './errorpwd/errorpwd.component';
 
 export const routes: Routes = [
     
@@ -20,6 +22,8 @@ export const routes: Routes = [
     { path: 'musicUser', component: MusicUserComponent },
     { path: 'usercallback', component:  UserCallBackComponent },
      { path: 'change', component:  ChangeComponent },
+     { path: 'expired', component:  ExpiredComponent },
+     { path: 'errorpwd', component:  ErrorpwdComponent },
     
     { path: '**', redirectTo: 'login' } 
 ];

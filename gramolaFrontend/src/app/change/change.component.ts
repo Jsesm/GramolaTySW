@@ -21,6 +21,7 @@ export class ChangeComponent {
   clave: string="";
   error: string ="";
 isCambioPass: any;
+  token: any;
 
 
   onSubmit() {
@@ -28,14 +29,14 @@ isCambioPass: any;
     if (this.mirarcorreo()) return;
     if (this.mirarpasswords()) return;
 
-    console.log("HOla");
+    console.log("Hola");
 
       this.userService.actualizarDatos(this.clave, this.nombreBar, this.email, this.pwd1).subscribe({
         next: (response) => {
           this.isCambioPass=true;
         },
         error: (err) => {
-          console.error("Error al obtener los datos:", err);
+          this.router.navigate(['/errorpwd'], { replaceUrl: true });
         }
       });
   }
@@ -44,17 +45,19 @@ isCambioPass: any;
 
   ngOnInit(): void { 
     const params = this.router.parseUrl(this.router.url).queryParams; 
-    const emailParam = params['email']; 
+    const emailParam = params['email'];
+    const tokenParam = params['id']; 
     this.clave= emailParam;
+    this.token= tokenParam;
 
     if (emailParam) {
-      this.userService.recuperarDatos(emailParam).subscribe({
+      this.userService.recuperarDatos(emailParam, tokenParam).subscribe({
         next: (response) => {
           this.email = response.email;
           this.nombreBar = response.nombreBar;
         },
         error: (err) => {
-          console.error("Error al obtener los datos:", err);
+          this.router.navigate(['/errorpwd'], { replaceUrl: true });
         }
       });
     }
