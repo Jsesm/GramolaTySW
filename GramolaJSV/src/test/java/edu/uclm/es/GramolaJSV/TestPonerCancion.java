@@ -41,7 +41,7 @@ public class TestPonerCancion {
 
                 WebElement pwd = driver.findElement(By.xpath(
                                 "//*[@id=\"password\"]"));
-                pwd.sendKeys("Jaime1234567");
+                pwd.sendKeys("Js@232874");
 
                 WebElement soyCliente = driver.findElement(By.xpath(
                                 "/html/body/app-root/app-auth/div/div/div/div[1]/app-login/div/button"));

@@ -41,6 +41,7 @@ export class MusicComponent implements OnInit {
   deviceError? : string //La ? significa que puede tener valor o no
    
   currentPlaylistError? : string 
+  emailCambioPass:string=""
 
   private timeoutId: any;
    private subscription: Subscription = new Subscription;
@@ -76,8 +77,13 @@ export class MusicComponent implements OnInit {
   }
 
   cambiarPassword() {
-    this.userService.cambiarPassword()
+    this.userService.cambiarPassword(this.emailCambioPass);
+    this.isCambioPass=false;
+  }
+
+  pedirPassword(){
     this.isCambioPass=true;
+
   }
 
   cancelarCerrarSesion(){

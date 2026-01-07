@@ -182,19 +182,19 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public void cambiarPassword(String clientId) {
+    public void cambiarPassword(String clientId, String email) {
         User usuariofiltro = new User();
         usuariofiltro.setClientId(clientId);
         User usuario = this.buscarUsuario(usuariofiltro);
 
         if (usuario == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuario no encontrado");
         }
         Token pwdtoken = new Token();
         usuario.setPwdtoken(pwdtoken);
         this.userDao.save(usuario);
         correo.mandarCorreo(
-                usuario.getEmail(),
+                email,
                 "http://127.0.0.1:4200/change?id=" + pwdtoken.getId() + "&email=" + usuario.getEmail(),
                 1);
     }

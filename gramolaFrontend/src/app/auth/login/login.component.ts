@@ -113,6 +113,7 @@ export class LoginComponent {
                 },
                   err => {
                     console.log(err.error.message);
+                    this.nohaybares=true;
                   }
                 );
               }, 

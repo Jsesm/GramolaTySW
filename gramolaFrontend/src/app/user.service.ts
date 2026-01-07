@@ -75,10 +75,11 @@ export class UserService {
   });
 }
 
-  cambiarPassword(){
+  cambiarPassword(emailCambio: string){
     const clientId= sessionStorage.getItem("clientId");
+    console.log(emailCambio);
     
-    this.http.post(`${this.apiUrl}/cambiarPassword?clientId=${clientId}`, {}, { 
+    this.http.post(`${this.apiUrl}/cambiarPassword?clientId=${clientId}&email=${emailCambio}`, {}, { 
   withCredentials: true 
 }).subscribe();
   }

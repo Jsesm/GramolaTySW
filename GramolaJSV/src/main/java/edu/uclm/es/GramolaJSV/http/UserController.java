@@ -124,8 +124,8 @@ public class UserController {
     }
 
     @PostMapping("/cambiarPassword")
-    public void cambiarPassword(@RequestParam String clientId) {
-        this.service.cambiarPassword(clientId);
+    public void cambiarPassword(@RequestParam String clientId, @RequestParam String email) {
+        this.service.cambiarPassword(clientId, email);
     }
 
     @GetMapping("/recuperarDatos")

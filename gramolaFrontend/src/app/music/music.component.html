@@ -10,7 +10,7 @@
 
   <div class="opciones"> 
  <div class="firma">
-  <button class="vinyl-button" (click)="cambiarPassword()">
+  <button class="vinyl-button" (click)="pedirPassword()">
     <div class="vinyl-disc">
       <div class="vinyl-lines"></div>
       <div class="vinyl-label label-red"></div>
@@ -111,22 +111,29 @@
           <button class="btn btn-añadir" (click)="confirmarPeticion()">Añadir Canción</button>
         </div>
     </div>
-    
 </div>
 
 
 
 <div class="MensajeAdvertencia" *ngIf="isCambioPass">
     <div class="quieresaniadir">
-      <h2>Te hemos mandado un mensaje a tu correo para cambiar la contraseña. No te preocupes hasta que no cambies 
-        la contraseña puedes seguir usando la app</h2>
+      <h2>Indique el correo al que quiere que le mandemos el formulario para cambiar su contraseña</h2>
             
+        <div class="campo-correo" style="margin: 20px 0;">
+          <input 
+            type="email" 
+            id="emailInput" 
+            class="form-control" 
+            [(ngModel)]="emailCambioPass" 
+            placeholder="ejemplo@correo.com"
+            style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        </div>
 
         <div class="botones">
-          <button class="btn btn-añadir" (click)="cerrarMensajePass()">Recibido</button>
+          <button class="btn btn-cancelar" (click)="cerrarMensajePass()">Cancelar</button>
+          <button class="btn btn-añadir" (click)="cambiarPassword()">Recibido</button>
         </div>
     </div>
-    
 </div>
 
 <div class="MensajeAdvertencia" *ngIf="isCerrarSesion">
