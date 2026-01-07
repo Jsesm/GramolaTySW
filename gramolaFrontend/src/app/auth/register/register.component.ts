@@ -22,7 +22,7 @@ export class RegisterComponent implements AfterViewInit {
   pwd2: string = '';
   clientId: string = '';
   clientSecret: string = '';
-  codigoPostal: string = '';
+  direccionPostal: string = '';
   precioCancion: number=1;
   Ubireal: boolean= false;
 
@@ -52,13 +52,13 @@ export class RegisterComponent implements AfterViewInit {
       if (this.comprobarDatosIndividuales(this.clientId, "Debe poner un clientId")) return;
       if (this.comprobarDatosIndividuales(this.clientSecret, "Debe poner un clientSecret")) return;
       if (this.comprobarDatosIndividuales(this.signatureDataUrl, "Debe firmar para verificar que es el dueño")) return;
-      if(this.mirarcodigoPostal()) return;
+      if(this.mirardireccionPostal()) return;
         
       if(this.mirarpasswords(this.pwd1, this.pwd2, "Las contraseñas no coinciden", "Debe poner una contraseña")) return;
 
     
       this.registroOK=true;
-      this.service.register(this.email!, this.pwd1!, this.pwd2!, this.nombreBar!, this.clientId!, this.clientSecret!, this.codigoPostal!,
+      this.service.register(this.email!, this.pwd1!, this.pwd2!, this.nombreBar!, this.clientId!, this.clientSecret!, this.direccionPostal!,
           this.precioCancion!, this.signatureDataUrl!, this.Ubireal).subscribe( 
             
         ok => { 
@@ -119,17 +119,10 @@ export class RegisterComponent implements AfterViewInit {
       return false;
     }
 
-    mirarcodigoPostal(): boolean {
+    mirardireccionPostal(): boolean {
 
-      const cpPattern = /^\d{5}$/;
-
-      if (!this.codigoPostal && !this.Ubireal) {
+      if (!this.direccionPostal && !this.Ubireal) {
         this.mensaje = "Escriba el código postal o acepte coger su ubicación actual";
-        return true;
-      }
-
-      if (!cpPattern.test(this.codigoPostal.toString())) {
-        this.mensaje = "El código postal debe tener exactamente 5 números";
         return true;
       }
 

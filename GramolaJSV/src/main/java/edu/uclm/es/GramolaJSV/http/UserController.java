@@ -92,9 +92,9 @@ public class UserController {
             this.service.confirmToken(email, token);
             response.sendRedirect("http://127.0.0.1:4200/payment?token=" + token);
         } catch (ResponseStatusException e) {
-            if (e.getStatusCode() == HttpStatus.GONE && e.getReason().equals("Token ya verificado")) {
-                response.sendRedirect("http://127.0.0.1:4200/payment?token=" + token);
-                // Si el token ha sido usado ya, le mandamos directo al pago otra vez
+            if (e.getStatusCode() == HttpStatus.SEE_OTHER && e.getReason().equals("Ya verificado y pagado")) {
+                response.sendRedirect("http://127.0.0.1:4200/login");
+
             } else {
                 response.sendRedirect("http://127.0.0.1:4200/expired");
             }
@@ -102,9 +102,10 @@ public class UserController {
     }
 
     @GetMapping("/bares")
-    public String obtenerBarescercanos(@RequestParam double latitud, @RequestParam double longitud) {
+    public void obtenerBarescercanos(@RequestParam double latitud, @RequestParam double longitud,
+            @RequestParam String clientId) {
 
-        return this.service.comprobarBares(latitud, longitud);
+        this.service.comprobarBares(latitud, longitud, clientId);
 
     }
 

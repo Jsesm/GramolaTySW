@@ -14,11 +14,11 @@ export class UserService {
   constructor(private http: HttpClient, private geoService: GeolocalizacionService) {} 
   
     register(email: string, pwd1: string, pwd2: string, bar: string, clientId: string, clientSecret: string,
-            codigoPostal: string, precioCancion: number, signatureDataUrl: string, Ubireal: boolean) {
+            direccionPostal: string, precioCancion: number, signatureDataUrl: string, Ubireal: boolean) {
 
       const obtenerCoords$ = Ubireal 
         ? this.geoService.getCoordenadas() 
-        : this.geoService.getCoordenadasporCodigoPostal(codigoPostal);
+        : this.geoService.getCoordenadasPorDireccion(direccionPostal);
 
       return obtenerCoords$.pipe(
         switchMap(coords => {
@@ -54,9 +54,11 @@ export class UserService {
 
   baresCercademi(latitud: number, longitud: number){
 
-    const url = `${this.apiUrl}/bares?latitud=${latitud}&longitud=${longitud}`;
+    const clientId= sessionStorage.getItem("clientId");
 
-    return this.http.get<any>(url, { responseType: 'text' as 'json' }); 
+    const url = `${this.apiUrl}/bares?latitud=${latitud}&longitud=${longitud}&clientId=${clientId}`;
+
+    return this.http.get(url, { observe: 'response', responseType: 'text' });
 
   }
 

@@ -1,13 +1,12 @@
 package edu.uclm.es.GramolaJSV;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -58,7 +57,8 @@ public class TestRegistro {
 
                 WebElement codigoPostal = driver.findElement(By.xpath(
                                 "/html/body/app-root/app-auth/div/div/div/div[2]/app-register/div/form/div[3]/div[2]/input"));
-                codigoPostal.sendKeys("45007");
+                codigoPostal.sendKeys(
+                                "Calle del Río Alberche, 32, Santa María de Benquerencia, Toledo, Castilla-La Mancha, 45007, España");
 
                 WebElement ubiReal = driver.findElement(By.xpath(
                                 "//*[@id=\"Ubireal\"]"));

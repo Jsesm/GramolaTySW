@@ -42,34 +42,36 @@ export class GeolocalizacionService {
   });
 }
 
-    getCoordenadasporCodigoPostal(codigoPostal: string): Observable<{ latitude: number; longitude: number }> {
-      const url = `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(codigoPostal)}&countrycodes=es&format=json&addressdetails=1&limit=1`;
-      return new Observable(observer => {
-        fetch(url, {
-          headers: {
-            'Accept': 'application/json'
-            // Note: setting a custom User-Agent is not allowed from browsers; if you hit rate limits,
-            // consider using a backend proxy that adds proper headers.
-          }
-        })
-          .then(response => {
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
-          })
-          .then((results: any[]) => {
-            if (results && results.length > 0) {
-              const data = results[0];
-              const latitude = Number(data.lat);
-              const longitude = Number(data.lon);
-              observer.next({ latitude, longitude });
-              observer.complete();
-            } else {
-              observer.error(new Error('No se encontraron resultados para el código postal'));
-            }
-          })
-          .catch(err => observer.error(err));
-      });
-    }
-    
+   getCoordenadasPorDireccion(direccion: string): Observable<{ latitude: number; longitude: number }> {
+  // Usamos el parámetro 'q' para direcciones completas
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(direccion)}&countrycodes=es&format=json&limit=1`;
+  
+  return new Observable(observer => {
+    fetch(url, {
+      headers: {
+        'Accept': 'application/json'
+        // IMPORTANTE: Nominatim requiere un User-Agent identificativo. 
+        // Si lo usas mucho, añade el nombre de tu app aquí si puedes.
+      }
+    })
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then((results: any[]) => {
+        if (results && results.length > 0) {
+          const data = results[0];
+          observer.next({ 
+            latitude: Number(data.lat), 
+            longitude: Number(data.lon) 
+          });
+          observer.complete();
+        } else {
+          observer.error(new Error('No se encontraron coordenadas para esa dirección'));
+        }
+      })
+      .catch(err => observer.error(err));
+  });
+}
 }
 

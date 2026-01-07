@@ -58,7 +58,7 @@ export class MusicComponent implements OnInit {
         this.actual = state.actual;
         this.tracks = state.tracks;
         this.playlistError = state.error;
-        this.isPaused=!state.actual?.is_active;
+        //this.isPaused=!state.actual?.is_active;
       });
   }
   

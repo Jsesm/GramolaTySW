@@ -22,7 +22,8 @@ export class LoginComponent {
   coordenadas?: GeolocationPosition
   email: string = '';
   password: string = '';
-    errorMsg: string = 'Escriba sus datos si es el dueño o pulse en "Soy Cliente del Bar" si está en el bar.';
+    errorMsg: string = 'Escriba sus datos y pulse "Gestionar mi bar" si quiere gestionarlo o "Dar acceso a los clientes" si quiere que utilicen este dispositivo.';
+
   scopes : string[] = ["user-read-private", "user-read-email", "playlist-read-private", "playlist-read-collaborative",
      "user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing", "user-library-read",
       "user-library-modify", "user-read-recently-played", "user-top-read", "app-remote-control", "streaming"]; 
@@ -50,22 +51,22 @@ export class LoginComponent {
   }
 
 
-login() {
-    if (!this.email || !this.password) {
-      this.errorMsg = 'Por favor, introduce tu email y contraseña.';
-      return; 
+    login() {
+        if (!this.email || !this.password) {
+          this.errorMsg = 'Por favor, introduce tu email y contraseña.';
+          return; 
+        }
+        
+        this.userService.login(this.email, this.password).subscribe( 
+          response => { 
+            sessionStorage.setItem("clientId", response) 
+            this.getToken(this.spoti.redirectUrl); 
+          }, 
+          err => { 
+            this.errorMsg = 'Con esas credenciales no hemos encontrado una cuenta creada que haya pagado.';
+          } 
+        );
     }
-    
-    this.userService.login(this.email, this.password).subscribe( 
-      response => { 
-        sessionStorage.setItem("clientId", response) 
-        this.getToken(this.spoti.redirectUrl); 
-      }, 
-      err => { 
-        this.errorMsg = 'Con esas credenciales no hemos encontrado una cuenta creada que haya pagado.';
-      } 
-    );
-  }
 
 
     private getToken(redirectUrl: string) { 
@@ -91,31 +92,42 @@ login() {
 
 
     soyuncliente() {
-      this.geoService.getCoordenadas().subscribe( 
-      response => { 
+        if (!this.email || !this.password) {
+          this.errorMsg = 'Por favor, introduce tu email y contraseña.';
+          return; 
+        }
+        this.userService.login(this.email, this.password).subscribe( 
+          response => { 
+            sessionStorage.setItem("clientId", response);
+            this.geoService.getCoordenadas().subscribe( 
+              response => { 
         
-        this.userService.baresCercademi(response.latitude, response.longitude).subscribe(
-          response => {
-            console.log("Hemos llegado aqui");
-            if(response){
-              sessionStorage.setItem("clientId", response) 
-              this.getToken(this.spoti.redirectUrlUsers);
-            }else{
-              this.nohaybares=true;
-            }
-          },
-          err => {
-            console.log(err.error.message);
-          }
+                this.userService.baresCercademi(response.latitude, response.longitude).subscribe(
+                  response => {
+           
+                  if(response){
+                    this.getToken(this.spoti.redirectUrlUsers);
+                  }else{
+                    this.nohaybares=true;
+                  }
+                },
+                  err => {
+                    console.log(err.error.message);
+                  }
+                );
+              }, 
+              err => { 
+                this.errorMsg = err.error.message;
+                console.log(err.error.message);
+              } 
+            );
+          }, 
+          err => { 
+            this.errorMsg = 'Con esas credenciales no hemos encontrado una cuenta creada que haya pagado.';
+          } 
         );
+      }
 
-      }, 
-      err => { 
-        this.errorMsg = err.error.message;
-        console.log(err.error.message);
-      } 
-    );
-    }
 
     entendido() {
       this.nohaybares=false;

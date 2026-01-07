@@ -24,6 +24,14 @@ public class TestPonerCancionError {
                 WebDriver driver = new ChromeDriver(options);
                 driver = ponerCookies(driver);
 
+                WebElement email = driver.findElement(By.xpath(
+                                "//*[@id=\"email\"]"));
+                email.sendKeys("j.sesmero.v@gmail.com");
+
+                WebElement pwd = driver.findElement(By.xpath(
+                                "//*[@id=\"password\"]"));
+                pwd.sendKeys("Jaime1234567");
+
                 WebElement soyCliente = driver.findElement(By.xpath(
                                 "/html/body/app-root/app-auth/div/div/div/div[1]/app-login/div/button"));
                 soyCliente.click();

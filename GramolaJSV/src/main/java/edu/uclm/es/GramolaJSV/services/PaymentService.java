@@ -15,11 +15,12 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 
-import edu.uclm.es.GramolaJSV.configuration.ConfigurationLoader;
 import edu.uclm.es.GramolaJSV.dao.CancionDao;
+import edu.uclm.es.GramolaJSV.dao.PagoGramolaDao;
 import edu.uclm.es.GramolaJSV.dao.StripeTransactionDao;
 import edu.uclm.es.GramolaJSV.dao.TokenDao;
 import edu.uclm.es.GramolaJSV.model.Cancion;
+import edu.uclm.es.GramolaJSV.model.PagoGramola;
 import edu.uclm.es.GramolaJSV.model.StripeTransaction;
 import edu.uclm.es.GramolaJSV.model.Token;
 import edu.uclm.es.GramolaJSV.model.User;
@@ -37,6 +38,8 @@ public class PaymentService {
     private TokenDao tokenDao;
     @Autowired
     private CancionDao cancionDao;
+    @Autowired
+    private PagoGramolaDao pagogramolaDao;
 
     public StripeTransaction prepay(String tipo, String opcion) throws StripeException, JSONException, IOException {
 
@@ -54,11 +57,12 @@ public class PaymentService {
 
     private long buscarPrecio(String tipo, String opcion) throws JSONException, IOException {
         long precio = 0L;
-        if (tipo.equals("Cuenta")) {
-            precio = ConfigurationLoader.get().getJsoCOnfiguration().getJSONObject("stripe").getLong("suscriptionMes");
-        } else if (tipo.equals("Anual")) {
-            precio = ConfigurationLoader.get().getJsoCOnfiguration().getJSONObject("stripe")
-                    .getLong("suscriptionAnual");
+        if (tipo.equals("Cuenta") || tipo.equals("Anual")) {
+            PagoGramola pg = pagogramolaDao.findById(1)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Configuración de precios no inicializada en DB"));
+
+            return tipo.equals("Cuenta") ? pg.getPrecioMensual() : pg.getPrecioAnual();
         } else {
             User usuariofiltro = new User();
             usuariofiltro.setClientId(opcion);
@@ -128,7 +132,7 @@ public class PaymentService {
     public boolean comprobarpago(String email) {
 
         for (StripeTransaction st : this.stdao.findAll()) {
-            if (st.getEmail().equals(email)) {
+            if (email != null && email.equals(st.getEmail())) {
                 return true;
             }
         }

@@ -74,17 +74,27 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token incorrecto");
         }
 
-        if (userToken.getCreationTime() < System.currentTimeMillis() - 60 * 1000 * 30) {
+        if (this.paymentService.comprobarpago(email) && userToken.isUsed()) { // Si ha pagado y está verficado le
+                                                                              // redirijo al login
+            throw new ResponseStatusException(HttpStatus.SEE_OTHER, "Ya verificado y pagado");
+        }
+
+        if (userToken.isUsed()) { // Si ya está verficado pero no ha pagado le borro la cuenta
+            User userfiltro = new User();
+            userfiltro.setCreationtoken(userToken);
+            User usuario = this.buscarUsuario(userfiltro);
+            userDao.delete(usuario);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token incorrecto");
+        }
+
+        if (userToken.getCreationTime() < System.currentTimeMillis() - 60 * 1000 * 30) { // Si ha caducado le borro la
+                                                                                         // cuenta
             User userfiltro = new User();
             userfiltro.setCreationtoken(userToken);
             User usuario = this.buscarUsuario(userfiltro);
             userDao.delete(usuario);
             throw new ResponseStatusException(HttpStatus.GONE, "Token caducado");
 
-        }
-
-        if (userToken.isUsed()) {
-            throw new ResponseStatusException(HttpStatus.GONE, "Token ya verificado");
         }
 
         userToken.use();
@@ -125,21 +135,21 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el usuario con clientId: " + clientId);
     }
 
-    public String comprobarBares(double latitud, double longitud) {
+    public void comprobarBares(double latitud, double longitud, String clientId) {
         double distanciaEntrePuntos;
-        double menorDistancia = 2000; // Ponemos una distancia mayor a la mínima exigida
-        String clientId = "";
-        for (User user : this.userDao.findAll()) {
-            distanciaEntrePuntos = DistanciaCoordenadas.calcularDistanciaMetros(Double.parseDouble(user.getLatitud()),
-                    Double.parseDouble(user.getLongitud()), latitud, longitud);
+        User usuariofiltro = new User();
+        usuariofiltro.setClientId(clientId);
+        User user = this.buscarUsuario(usuariofiltro);
 
-            System.out.println(distanciaEntrePuntos);
+        distanciaEntrePuntos = DistanciaCoordenadas.calcularDistanciaMetros(Double.parseDouble(user.getLatitud()),
+                Double.parseDouble(user.getLongitud()), latitud, longitud);
 
-            if (distanciaEntrePuntos <= 100 && distanciaEntrePuntos < menorDistancia) {
-                clientId = user.getClientId();
-            }
+        System.out.println("Hay un diferencia de: " + distanciaEntrePuntos);
+
+        if (distanciaEntrePuntos > 100) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el usuario con clientId: " + clientId);
         }
-        return clientId;
+
     }
 
     public User buscarUsuario(User usuarioFiltro) {
