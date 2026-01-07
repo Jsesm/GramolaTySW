@@ -28,7 +28,7 @@ public class MailService {
             body = "¡Hola!\n\n" +
                     "Tu cuenta ha sido registrada correctamente. Para empezar a disfrutar de toda nuestra música " +
                     "dentro de tu bar solo falta que confirmes tu primer pago.\n\n" +
-                    "⚠️ IMPORTANTE: Por seguridad, el enlace de confirmación caducará en solo 10 MINUTOS. " +
+                    "⚠️ IMPORTANTE: Por seguridad, el enlace de confirmación caducará en solo 30 MINUTOS. " +
                     "Si el link caduca tendrás que registrarte otra vez\n\n" +
                     "Pulsa en el siguiente link para completar el proceso:\n" +
                     link + "\n\n" +

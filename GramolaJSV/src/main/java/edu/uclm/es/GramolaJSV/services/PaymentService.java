@@ -125,4 +125,14 @@ public class PaymentService {
         this.cancionDao.save(song);
     }
 
+    public boolean comprobarpago(String email) {
+
+        for (StripeTransaction st : this.stdao.findAll()) {
+            if (st.getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

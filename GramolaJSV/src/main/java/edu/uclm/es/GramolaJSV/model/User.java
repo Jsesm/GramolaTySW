@@ -35,7 +35,6 @@ public class User {
     @JoinColumn(name = "pwdtoken")
     private Token pwdtoken;
 
-    // Getters y setters
     public String getEmail() {
         return email;
     }

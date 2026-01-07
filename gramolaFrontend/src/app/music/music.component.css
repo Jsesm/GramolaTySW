@@ -220,15 +220,18 @@
   height: 25%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0 10px;
+  justify-content: space-between;
+  padding: 0 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 10px;
 }
 
 .titulo h2 {
   color: #FFFFFF;
   margin: 0;
-  font-size: clamp(1rem, 2vw, 1.5rem); /* Se ajusta entre 1rem y 1.5rem según la pantalla */
-  text-align: center;
+  font-size: clamp(1rem, 1.5vw, 1.3rem); 
+  font-weight: 600;
+  letter-spacing: -0.5px;
 }
 
 .devices {
@@ -511,6 +514,30 @@
   box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
 }
 
+.boton-recargar {
+  background-color: transparent;
+  color: #1DB954; /* Verde Spotify */
+  border: 1px solid #1DB954;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.boton-recargar:hover {
+  background-color: #1DB954;
+  color: #000000;
+  transform: scale(1.05); /* Pequeño efecto de pulsado */
+}
+
+.boton-recargar:active {
+  transform: scale(0.95);
+}
 
 /* Ajustes específicos para móviles muy pequeños */
 @media (max-width: 480px) {

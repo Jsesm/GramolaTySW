@@ -35,7 +35,7 @@ export class UserService {
             firma: signatureDataUrl
           };
 
-          return this.http.post<any>(`${this.apiUrl}/register`, info, { responseType: 'text' as 'json' });
+          return this.http.post<any>(`${this.apiUrl}/register`, info);
         })
       );
     }

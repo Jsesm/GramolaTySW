@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,11 @@ public class UserService {
     private MailService correo;
     @Autowired
     private TokenDao tokenDao;
+    @Autowired
+    @Lazy
+    private PaymentService paymentService;
 
-    public String register(String bar, String email, String pwd, String clientId, String clientSecret,
+    public void register(String bar, String email, String pwd, String clientId, String clientSecret,
             String latitud, String longitud, double precio, String firma) {
 
         Optional<User> optUser = this.userDao.findById(email);
@@ -52,9 +56,7 @@ public class UserService {
             correo.mandarCorreo(email,
                     "http://127.0.0.1:8080/users/confirmToken/" + email + "?token=" + user.getCreationtoken().getId(),
                     0);
-            return "OK 200";
-            // return "http://localhost:8080/users/confirmToken/"+ email +"?token="+
-            // user.getCreationToken().getId();
+
         } else {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El usuario ya existe");
         }
@@ -72,10 +74,6 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token incorrecto");
         }
 
-        if (userToken.isUsed()) {
-            throw new ResponseStatusException(HttpStatus.GONE, "Token ya verificado");
-        }
-
         if (userToken.getCreationTime() < System.currentTimeMillis() - 60 * 1000 * 30) {
             User userfiltro = new User();
             userfiltro.setCreationtoken(userToken);
@@ -83,6 +81,10 @@ public class UserService {
             userDao.delete(usuario);
             throw new ResponseStatusException(HttpStatus.GONE, "Token caducado");
 
+        }
+
+        if (userToken.isUsed()) {
+            throw new ResponseStatusException(HttpStatus.GONE, "Token ya verificado");
         }
 
         userToken.use();
@@ -105,6 +107,10 @@ public class UserService {
 
         if (!user.getPwd().equals(StringEncryptor.encrypt(pwd))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "El usuario no esta registrado");
+        }
+
+        if (!this.paymentService.comprobarpago(user.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "El usuario no ha pagado");
         }
 
         return user.getClientId();

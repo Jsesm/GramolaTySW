@@ -1,5 +1,11 @@
 package edu.uclm.es.GramolaJSV;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.Duration;
 
 import org.openqa.selenium.By;
@@ -12,7 +18,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TestRegistro {
+
+        private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/gramola?serverTimezone=UTC&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true&maxAllowedPacket=134217728";
+        private static final String DB_USER = "tysweb2025";
+        private static final String DB_PASS = "12345678";
+
         public static void main(String[] args) {
+
+                int users = contarUsers();
                 WebDriver driver = new ChromeDriver();
                 JavascriptExecutor js = (JavascriptExecutor) driver;
 
@@ -81,13 +94,37 @@ public class TestRegistro {
                                 "/html/body/app-root/app-auth/div/div/div/div[2]/app-register/div/form/div[5]/button[2]"));
                 Registrarme.click();
 
-                /*
-                 * WebElement botonAceptar = driver.findElement(By.xpath(
-                 * "/html/body/app-root/app-auth-layout/main/app-auth-container/div/div/app-register/div/div/form/button[2]"
-                 * ));
-                 * botonAceptar.click();
-                 */
+                wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+                                "/html/body/app-root/app-mandarcorreo/div/div")));
 
+                int usersAhora = contarUsers();
+
+                System.out.println("\n\n\n\n--- RESULTADO DEL TEST ---");
+                System.out.println("Usuarios al inicio: " + users);
+                System.out.println("Usuarios al final: " + usersAhora);
+
+                assertEquals(users + 1, usersAhora, "La base de datos no aumentó en 1");
+
+                System.out.println("Se ha incluido el usuario correctamente!");
+
+        }
+
+        public static int contarUsers() {
+                int total = 0;
+                String query = "SELECT COUNT(*) AS total FROM user";
+
+                try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+                                Statement stmt = conn.createStatement();
+                                ResultSet rs = stmt.executeQuery(query)) {
+
+                        if (rs.next()) {
+                                total = rs.getInt("total");
+                        }
+                } catch (Exception e) {
+                        System.err.println("Error conectando a la BD: " + e.getMessage());
+                }
+                return total;
         }
 
 }

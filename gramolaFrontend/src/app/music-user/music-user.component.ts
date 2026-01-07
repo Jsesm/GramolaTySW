@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { PaymentService } from '../payment.service';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
+import { interval, Subscription, switchMap } from 'rxjs';
 
 // Declaramos Stripe para que TypeScript lo reconozca globalmente
 declare let Stripe: any 
@@ -40,12 +41,32 @@ export class MusicUserComponent {
     nombreBar?: any;
     firma?: any;
   error: string="";
+
+    private subscription: Subscription = new Subscription;
+
     constructor(private spoti : SpotiService, private gramola : ReproductorService, private paymentService: PaymentService, private userService : UserService) {}
 
       ngOnInit(): void { 
         this.getCurrentPlayList();
         this.crearMetodoPago();
         this.buscarDatos();
+
+        this.subscription = interval(5000)
+      .pipe(
+        switchMap(() => this.gramola.getCurrentPlayList())
+      )
+      .subscribe((state) => {
+        this.actual = state.actual;
+        this.tracks = state.tracks;
+        this.playlistError = state.error;
+      });
+
+        
+      }
+
+
+      ngOnDestroy() {
+        this.subscription.unsubscribe();
       }
 
     buscarDatos(){

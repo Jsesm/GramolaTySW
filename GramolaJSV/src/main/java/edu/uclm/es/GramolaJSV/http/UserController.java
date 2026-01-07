@@ -1,7 +1,6 @@
 package edu.uclm.es.GramolaJSV.http;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody Map<String, String> body) {
+    public void register(@RequestBody Map<String, String> body) {
 
         String bar = body.get("bar");
         String email = body.get("email");
@@ -82,7 +81,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Invalid address");
         }
 
-        return this.service.register(bar, email, pwd1, clientId, clientSecret, latitud, longitud, precio, firma);
+        this.service.register(bar, email, pwd1, clientId, clientSecret, latitud, longitud, precio, firma);
 
     }
 

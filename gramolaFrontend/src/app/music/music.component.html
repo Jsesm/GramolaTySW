@@ -29,21 +29,24 @@
   </button>
 </div>
     
-    <div class="dispositivosRectangulo">
-      <div class="titulo">
-        <h2>Dispositivos Conectados</h2>
-      </div>
-      
-      <div class="devices" *ngFor="let device of devices">
-        <div class="dispositivo" >
-          <span class="content">
-            <span *ngIf="device.is_active">🎶</span> 
-            {{ device.name }} - {{ device.type }}
-            <span *ngIf="device.is_active">🎶</span> 
-          </span>
-        </div>   
-      </div>
-    </div>
+<div class="dispositivosRectangulo">
+  <div class="titulo">
+    <h2>Dispositivos Conectados</h2>
+    <button (click)="getDevices()" class="boton-recargar">
+      🔄
+    </button>
+  </div>
+  
+  <div class="devices" *ngFor="let device of devices">
+    <div class="dispositivo">
+      <span class="content">
+        <span *ngIf="device.is_active">🎶</span> 
+        {{ device.name }} - {{ device.type }}
+        <span *ngIf="device.is_active">🎶</span> 
+      </span>
+    </div>   
+  </div>
+</div>
 
     <div class="cancionActual">
       <div *ngIf="actual; else noMusic">

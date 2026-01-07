@@ -62,7 +62,7 @@ login() {
         this.getToken(this.spoti.redirectUrl); 
       }, 
       err => { 
-        this.errorMsg = 'No hemos encontrado una cuenta creada con esos datos.';
+        this.errorMsg = 'Con esas credenciales no hemos encontrado una cuenta creada que haya pagado.';
       } 
     );
   }

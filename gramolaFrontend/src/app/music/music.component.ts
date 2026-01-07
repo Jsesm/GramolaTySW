@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { ReproductorService } from '../reproductor.service';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
+import { interval, Subscription, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-music',
@@ -42,13 +43,29 @@ export class MusicComponent implements OnInit {
   currentPlaylistError? : string 
 
   private timeoutId: any;
+   private subscription: Subscription = new Subscription;
 
   constructor(private spoti : SpotiService, private gramola : ReproductorService, private router: Router, private userService: UserService) {}
    
   ngOnInit(): void { 
     this.getDevices()
     this.getCurrentPlayList()
-  } 
+    this.subscription = interval(5000)
+      .pipe(
+        switchMap(() => this.gramola.getCurrentPlayList())
+      )
+      .subscribe((state) => {
+        this.actual = state.actual;
+        this.tracks = state.tracks;
+        this.playlistError = state.error;
+        this.isPaused=!state.actual?.is_active;
+      });
+  }
+  
+  
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   cerrarMensajePass(){
     this.isCambioPass=false;
