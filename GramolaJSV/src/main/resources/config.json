@@ -5,8 +5,11 @@
         "suscriptionMes": 1000,
         "suscriptionAnual": 10000
     },
-    "urlPayment": "http",
-    "urlCallback": "http",
-    "urlAccountsSpotify": "http",
-    "urlHome": "http://127.0.0.1:4200"
+    "urlPayment": "http://127.0.0.1:4200/payment?token=",
+    "urlExpired": "http://127.0.0.1:4200/expired",
+    "urlLogin": "http://127.0.0.1:4200/login",
+    "urlAccountsSpotify": "https://accounts.spotify.com",
+    "urlHome": "http://127.0.0.1:4200/",
+    "urlChange": "http://127.0.0.1:4200/change",
+    "urlconfirmToken": "http://127.0.0.1:8080/users/confirmToken/"
 }

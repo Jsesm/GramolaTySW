@@ -1,9 +1,11 @@
 package edu.uclm.es.GramolaJSV.services;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Example;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.uclm.es.GramolaJSV.configuration.ConfigurationLoader;
 import edu.uclm.es.GramolaJSV.dao.TokenDao;
 import edu.uclm.es.GramolaJSV.dao.UserDao;
 import edu.uclm.es.GramolaJSV.model.Token;
@@ -35,7 +38,7 @@ public class UserService {
     private PaymentService paymentService;
 
     public void register(String bar, String email, String pwd, String clientId, String clientSecret,
-            String latitud, String longitud, double precio, String firma) {
+            String latitud, String longitud, double precio, String firma) throws JSONException, IOException {
 
         Optional<User> optUser = this.userDao.findById(email);
 
@@ -52,9 +55,10 @@ public class UserService {
             user.setPrecioCancion(precio);
             user.setFirma(firma);
             this.userDao.save(user);
+            String urlBase = ConfigurationLoader.get().getJsoCOnfiguration().getString("urlconfirmToken");
 
             correo.mandarCorreo(email,
-                    "http://127.0.0.1:8080/users/confirmToken/" + email + "?token=" + user.getCreationtoken().getId(),
+                    urlBase + email + "?token=" + user.getCreationtoken().getId(),
                     0);
 
         } else {
@@ -182,7 +186,7 @@ public class UserService {
         return ResponseEntity.ok().build();
     }
 
-    public void cambiarPassword(String clientId, String email) {
+    public void cambiarPassword(String clientId, String email) throws JSONException, IOException {
         User usuariofiltro = new User();
         usuariofiltro.setClientId(clientId);
         User usuario = this.buscarUsuario(usuariofiltro);
@@ -193,9 +197,10 @@ public class UserService {
         Token pwdtoken = new Token();
         usuario.setPwdtoken(pwdtoken);
         this.userDao.save(usuario);
+        String urlBase = ConfigurationLoader.get().getJsoCOnfiguration().getString("urlChange");
         correo.mandarCorreo(
                 email,
-                "http://127.0.0.1:4200/change?id=" + pwdtoken.getId() + "&email=" + usuario.getEmail(),
+                urlBase + "?id=" + pwdtoken.getId() + "&email=" + usuario.getEmail(),
                 1);
     }
 

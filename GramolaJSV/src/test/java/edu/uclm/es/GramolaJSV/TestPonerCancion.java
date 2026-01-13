@@ -41,7 +41,7 @@ public class TestPonerCancion {
 
                 WebElement pwd = driver.findElement(By.xpath(
                                 "//*[@id=\"password\"]"));
-                pwd.sendKeys("Js@232874");
+                pwd.sendKeys("Jaime1234567");
 
                 WebElement soyCliente = driver.findElement(By.xpath(
                                 "/html/body/app-root/app-auth/div/div/div/div[1]/app-login/div/button"));
@@ -53,7 +53,7 @@ public class TestPonerCancion {
 
                 WebElement buscador = driver.findElement(By.xpath(
                                 "//*[@id=\"cancion\"]"));
-                buscador.sendKeys("Melendi");
+                buscador.sendKeys("Quevedo");
 
                 wait = new WebDriverWait(driver, Duration.ofSeconds(10));
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(

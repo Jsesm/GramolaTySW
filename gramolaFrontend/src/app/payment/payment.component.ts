@@ -19,6 +19,8 @@ export class PaymentComponent implements OnInit {
   stripe?: any;
   mensajeMensual?: string= "Disfruta de las comodidades de la gramola pagando 10€ al mes";
   mensajeAnual?: string= "¡¡SOLO HOY!! Paga 100€ por un año y el més te saldrá a solo 8,33€";
+  tituloMensual?: string= "MONEY, MONEY, MONTH";
+  tituloAnual?: string= "UN AÑO MÁS";
   transactionDetails: any;
   token?: string; 
   // Nuevo estado para controlar la visibilidad y el spinner
@@ -152,6 +154,8 @@ export class PaymentComponent implements OnInit {
               // Mostrar mensaje de éxito y redireccionar
               self.mensajeMensual="PAGO REALIZADO CON ÉXITO... Se te redirigirá a la pantalla de inicio de sesión."
               self.mensajeAnual="PAGO REALIZADO CON ÉXITO... Se te redirigirá a la pantalla de inicio de sesión."
+              self.tituloAnual= "MUCHAS GRACIAS"
+              self.tituloMensual= "MUCHAS GRACIAS"
               self.setLoading(true, true);
               const resultMessage = document.querySelector(".result-message") as HTMLElement;
               resultMessage.classList.remove("hidden");

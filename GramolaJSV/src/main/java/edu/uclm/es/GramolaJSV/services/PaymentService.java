@@ -15,6 +15,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 
+import edu.uclm.es.GramolaJSV.configuration.ConfigurationLoader;
 import edu.uclm.es.GramolaJSV.dao.CancionDao;
 import edu.uclm.es.GramolaJSV.dao.PagoGramolaDao;
 import edu.uclm.es.GramolaJSV.dao.StripeTransactionDao;
@@ -28,8 +29,14 @@ import edu.uclm.es.GramolaJSV.model.User;
 @Service
 public class PaymentService {
     static {
-        Stripe.apiKey = "sk_test_51SIV18I9bvpKxx36ImWVBmloO10cvdLq32rlx0TCSegg5K5kwOSauISE7PCuJJ1UsHPtMNxVyPVAdec9FgFJH4u300O4A5IXki";
-    } // Clave Secreta
+        try {
+            JSONObject stripeConfig = ConfigurationLoader.get().getJsoCOnfiguration().getJSONObject("stripe");
+            Stripe.apiKey = stripeConfig.getString("secretKey");
+        } catch (IOException | JSONException e) {
+            System.err.println("ERROR CRÍTICO: No se pudo cargar la configuración de Stripe");
+            e.printStackTrace();
+        }
+    }
     @Autowired
     private StripeTransactionDao stdao;
     @Autowired
@@ -57,6 +64,8 @@ public class PaymentService {
 
     private long buscarPrecio(String tipo, String opcion) throws JSONException, IOException {
         long precio = 0L;
+        // Como no se puede hardcodear hay que escribir una fila en la base de datos con
+        // id 1, PrecioMensual 1000, PrecioAnual 10000
         if (tipo.equals("Cuenta") || tipo.equals("Anual")) {
             PagoGramola pg = pagogramolaDao.findById(1)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -125,7 +134,7 @@ public class PaymentService {
         song.setIdCancion(idCancion);
         song.setNombreCancion(nombreCancion);
         song.setAutorCancion(autorCancion);
-        song.setBar(usuarioReal.getNombre());
+        song.setBar(usuarioReal.getEmail());
         this.cancionDao.save(song);
     }
 

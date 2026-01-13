@@ -41,6 +41,8 @@ export class RegisterComponent implements AfterViewInit {
   constructor(private service : UserService, private router: Router) {
 
    }
+
+   
   ngAfterViewInit(): void {
    //Poner algo
   }

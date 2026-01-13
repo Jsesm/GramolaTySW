@@ -1,5 +1,8 @@
 package edu.uclm.es.GramolaJSV.http;
 
+import java.io.IOException;
+
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +23,7 @@ public class SpotiController {
 
     @GetMapping("/getAuthorizationToken")
     public SpotiToken getAuthorizationToken(@RequestParam String code, @RequestParam String clientId,
-            @RequestParam String redirect) {
+            @RequestParam String redirect) throws JSONException, IOException {
         SpotiToken token = this.service.getAuthorizationToken(code, clientId, redirect);
         return token;
 

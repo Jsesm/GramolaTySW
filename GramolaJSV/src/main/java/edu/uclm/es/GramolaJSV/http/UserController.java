@@ -3,6 +3,7 @@ package edu.uclm.es.GramolaJSV.http;
 import java.io.IOException;
 import java.util.Map;
 
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import edu.uclm.es.GramolaJSV.configuration.ConfigurationLoader;
 import edu.uclm.es.GramolaJSV.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,8 +33,6 @@ public class UserController {
     // Spring
     private UserService service;
 
-    @CrossOrigin(origins = "http://127.0.0.1:4200", allowCredentials = "true") // Esto alomejor es mejor ponerlo arriba
-                                                                               // debajo de @RequestMapping("users")
     @PostMapping("/login")
     public String login(HttpServletResponse response, HttpSession session, @RequestBody Map<String, String> body) {
 
@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody Map<String, String> body) {
+    public void register(@RequestBody Map<String, String> body) throws JSONException, IOException {
 
         String bar = body.get("bar");
         String email = body.get("email");
@@ -90,13 +90,13 @@ public class UserController {
             throws IOException {
         try {
             this.service.confirmToken(email, token);
-            response.sendRedirect("http://127.0.0.1:4200/payment?token=" + token);
+            response.sendRedirect(ConfigurationLoader.get().getJsoCOnfiguration().getString("urlPayment") + token);
         } catch (ResponseStatusException e) {
             if (e.getStatusCode() == HttpStatus.SEE_OTHER && e.getReason().equals("Ya verificado y pagado")) {
-                response.sendRedirect("http://127.0.0.1:4200/login");
+                response.sendRedirect(ConfigurationLoader.get().getJsoCOnfiguration().getString("urlLogin"));
 
             } else {
-                response.sendRedirect("http://127.0.0.1:4200/expired");
+                response.sendRedirect(ConfigurationLoader.get().getJsoCOnfiguration().getString("urlExpired"));
             }
         }
     }
@@ -124,7 +124,8 @@ public class UserController {
     }
 
     @PostMapping("/cambiarPassword")
-    public void cambiarPassword(@RequestParam String clientId, @RequestParam String email) {
+    public void cambiarPassword(@RequestParam String clientId, @RequestParam String email)
+            throws JSONException, IOException {
         this.service.cambiarPassword(clientId, email);
     }
 

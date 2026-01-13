@@ -20,7 +20,7 @@ export class ChangeComponent {
   pwd2: string=""
   clave: string="";
   error: string ="";
-isCambioPass: any;
+  isCambioPass: any;
   token: any;
 
 

@@ -9,8 +9,8 @@
 
     <form (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="email">¿Cuál es tu correo electrónico?</label>
-        <input type="email" id="email" placeholder={{email}} [(ngModel)]="email" name="email">
+        <label for="email">Este es el correo vinculado a tu cuenta</label>
+        <input type="email" id="email" placeholder={{email}} [(ngModel)]="email" name="email" readonly>
       </div>
 
       <div class="form-group">

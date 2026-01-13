@@ -1,7 +1,7 @@
 <div id="payment-container">
 
 <div id="prepay">
-    <h2>MONEY, MONEY, MONTH</h2>
+    <h2>{{tituloMensual}}</h2>
 
     <p>{{mensajeMensual}}</p>
     <button (click)="prepay('Cuenta')" [disabled]="isLoading || !stripeInitialized" 
@@ -12,7 +12,7 @@
 </div>
 
 <div id="prepay">
-    <h2>UN AÑO MÁS</h2>
+    <h2>{{tituloAnual}}</h2>
 
     <p>{{mensajeAnual}}</p>
     <button (click)="prepay('Anual')" [disabled]="isLoading || !stripeInitialized" 
